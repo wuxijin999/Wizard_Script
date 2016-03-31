@@ -17,7 +17,6 @@ public class SingletonMonobehavior<T> : MonoBehaviour where T : Component {
             instance = this as T;
         }
         else {
-            Debug.Log(instance);
             DestroyImmediate(instance);
             instance = this as T;
         }
