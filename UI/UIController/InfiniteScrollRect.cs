@@ -1,4 +1,8 @@
-﻿using UnityEngine;
+﻿//--------------------------------------------
+//无限循环控件，基于UGUI
+//目前仅支持垂直方向
+//---------------------------------------------
+using UnityEngine;
 using System.Collections;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
