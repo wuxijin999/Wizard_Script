@@ -9,22 +9,26 @@ public class InfiniteScrollRect : MonoBehaviour, IBeginDragHandler, IDragHandler
     public Camera mCamera;
     public RectTransform content;
 
-
     Vector3 lastMousePos = Vector3.one;
     Vector3 mousePos = Vector3.one;
     RectTransform mRect;
     RectTransform[] childrenRect = null;
 
-    void Start() {
-        InitializeChildPosition();
-    }
-    public void OnBeginDrag(PointerEventData eventData) {
-        mRect = this.transform as RectTransform;
-        childrenRect = new RectTransform[content.childCount];
-        for (int i = 0; i < childrenRect.Length; i++) {
-            childrenRect[i] = content.GetChild(i).transform as RectTransform;
-        }
+    Action begeinDragCallBack = null;
+    Action dragCallBack = null;
+    Action endDragCallBack = null;
 
+    public void RegCallBack(Action _beginCallBack, Action _dragCallBack, Action _endCallBack) {
+        begeinDragCallBack = _beginCallBack;
+        dragCallBack = _dragCallBack;
+        endDragCallBack = _endCallBack;
+    }
+
+
+    public void OnBeginDrag(PointerEventData eventData) {
+        if (begeinDragCallBack != null) {
+            begeinDragCallBack();
+        }
         lastMousePos = mousePos = mCamera.ScreenToWorldPoint(Input.mousePosition);
     }
 
@@ -44,31 +48,28 @@ public class InfiniteScrollRect : MonoBehaviour, IBeginDragHandler, IDragHandler
             CrossBottomBorderEvent(mRect, childrenRect);
         }
 
-
-        //   RefreshPosition();
         lastMousePos = mousePos;
+
+        if (dragCallBack != null) {
+            dragCallBack();
+        }
     }
 
     public void OnEndDrag(PointerEventData eventData) {
-
+        if (endDragCallBack != null) {
+            endDragCallBack();
+        }
     }
 
-    private void Update() {
-
-        //         content.position += new Vector3(0, 1 * Time.deltaTime, 0);
-        // 
-        //         for (int i = 0; i < childrenRect.Length; i++) {
-        //             childrenRect[i] = content.GetChild(i).transform as RectTransform;
-        //         }
-        // 
-        //         if (100 > 0f) {
-        //             CrossTopBorderEvent(mRect, childrenRect);
-        //         }
-        //         else {
-        //             CrossBottomBorderEvent(mRect, childrenRect);
-        //         }
-
+    void Start() {
+        mRect = this.transform as RectTransform;
+        childrenRect = new RectTransform[content.childCount];
+        for (int i = 0; i < childrenRect.Length; i++) {
+            childrenRect[i] = content.GetChild(i).transform as RectTransform;
+        }
+        InitializeChildPosition(mRect, childrenRect);
     }
+
     private void CrossTopBorderEvent(RectTransform _rect, RectTransform[] _childrenRect) {
 
         Vector3 offsetMax = _rect.parent.TransformPoint(new Vector3(0, _rect.offsetMax.y, 0));
@@ -115,20 +116,15 @@ public class InfiniteScrollRect : MonoBehaviour, IBeginDragHandler, IDragHandler
 
     }
 
-    private void InitializeChildPosition() {
-        mRect = this.transform as RectTransform;
-        childrenRect = new RectTransform[content.childCount];
-        for (int i = 0; i < childrenRect.Length; i++) {
-            childrenRect[i] = content.GetChild(i).transform as RectTransform;
-        }
+    private void InitializeChildPosition(RectTransform _mRect, RectTransform[] _childrenRect) {
 
-        Vector3 offsetMaxWorld = mRect.parent.TransformPoint(mRect.localPosition.x, mRect.offsetMax.y + childrenRect[0].rect.height * 0.5f, 0);
-        RectTransform lastRect = childrenRect[0];
-        childrenRect[0].position = offsetMaxWorld;
+        Vector3 offsetMaxWorld = _mRect.parent.TransformPoint(_mRect.localPosition.x, _mRect.offsetMax.y + _childrenRect[0].rect.height * 0.5f, 0);
+        RectTransform lastRect = _childrenRect[0];
+        _childrenRect[0].position = offsetMaxWorld;
 
-        for (int i = 1; i < childrenRect.Length; i++) {
-            childrenRect[i].localPosition = lastRect.localPosition - new Vector3(0, lastRect.rect.height * 0.5f + childrenRect[i].rect.height * 0.5f, 0);
-            lastRect = childrenRect[i];
+        for (int i = 1; i < _childrenRect.Length; i++) {
+            _childrenRect[i].localPosition = lastRect.localPosition - new Vector3(0, lastRect.rect.height * 0.5f + _childrenRect[i].rect.height * 0.5f, 0);
+            lastRect = _childrenRect[i];
         }
 
     }
