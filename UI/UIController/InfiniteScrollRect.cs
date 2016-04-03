@@ -12,11 +12,15 @@ public class InfiniteScrollRect : MonoBehaviour, IBeginDragHandler, IDragHandler
 
     public Camera mCamera;
     public RectTransform content;
+    public float dampRate = 0f;
 
     Vector3 lastMousePos = Vector3.one;
     Vector3 mousePos = Vector3.one;
     RectTransform mRect;
     RectTransform[] childrenRect = null;
+    float offsetY = 0f;
+    bool inSlowDown = false;
+    float initialVelocity = 0f;
 
     Action begeinDragCallBack = null;
     Action dragCallBack = null;
@@ -30,6 +34,7 @@ public class InfiniteScrollRect : MonoBehaviour, IBeginDragHandler, IDragHandler
 
 
     public void OnBeginDrag(PointerEventData eventData) {
+        inSlowDown = false;
         if (begeinDragCallBack != null) {
             begeinDragCallBack();
         }
@@ -38,28 +43,14 @@ public class InfiniteScrollRect : MonoBehaviour, IBeginDragHandler, IDragHandler
 
     public void OnDrag(PointerEventData eventData) {
         mousePos = mCamera.ScreenToWorldPoint(Input.mousePosition);
-        float y = mousePos.y - lastMousePos.y;
-        content.position += new Vector3(0, y, 0);
-
-        for (int i = 0; i < childrenRect.Length; i++) {
-            childrenRect[i] = content.GetChild(i).transform as RectTransform;
-        }
-
-        if (y > 0f) {
-            CrossTopBorderEvent(mRect, childrenRect);
-        }
-        else if (y < 0f) {
-            CrossBottomBorderEvent(mRect, childrenRect);
-        }
-
+        offsetY = mousePos.y - lastMousePos.y;
         lastMousePos = mousePos;
-
-        if (dragCallBack != null) {
-            dragCallBack();
-        }
     }
 
     public void OnEndDrag(PointerEventData eventData) {
+
+        inSlowDown = true;
+        initialVelocity = eventData.delta.y / Time.deltaTime;
         if (endDragCallBack != null) {
             endDragCallBack();
         }
@@ -73,6 +64,39 @@ public class InfiniteScrollRect : MonoBehaviour, IBeginDragHandler, IDragHandler
         }
         InitializeChildPosition(mRect, childrenRect);
     }
+
+    private void Update() {
+        if (inSlowDown) {
+            initialVelocity -= dampRate * initialVelocity;
+            offsetY = initialVelocity * 0.01f * Time.deltaTime;
+            if (initialVelocity < 1f) {
+                inSlowDown = false;
+            }
+        }
+    }
+
+    void LateUpdate() {
+        if (offsetY < 0.001f) {
+            return;
+        }
+
+        content.position += new Vector3(0, offsetY, 0);
+
+        for (int i = 0; i < childrenRect.Length; i++) {
+            childrenRect[i] = content.GetChild(i).transform as RectTransform;
+        }
+
+        if (offsetY > 0f) {
+            CrossTopBorderEvent(mRect, childrenRect);
+        }
+        else {
+            CrossBottomBorderEvent(mRect, childrenRect);
+        }
+
+        offsetY = 0f;
+    }
+
+
 
     private void CrossTopBorderEvent(RectTransform _rect, RectTransform[] _childrenRect) {
 
@@ -89,6 +113,7 @@ public class InfiniteScrollRect : MonoBehaviour, IBeginDragHandler, IDragHandler
                 offsetBottomWorld = _childrenRect[i].parent.TransformPoint(offsetBottomLocal);
                 _childrenRect[i].position = offsetBottomWorld;
                 _childrenRect[i].SetAsLastSibling();
+                _childrenRect[i].GetComponent<InfiniteItem>().DoFirstToLast();
             }
             else {
                 break;
@@ -112,6 +137,7 @@ public class InfiniteScrollRect : MonoBehaviour, IBeginDragHandler, IDragHandler
                 offsetTopWorld = _childrenRect[i].parent.TransformPoint(offsetTopLocal);
                 _childrenRect[i].position = offsetTopWorld;
                 _childrenRect[i].SetAsFirstSibling();
+                _childrenRect[i].GetComponent<InfiniteItem>().DoLastToFirst();
             }
             else {
                 break;
