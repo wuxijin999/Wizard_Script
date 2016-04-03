@@ -109,8 +109,8 @@ public class InfiniteScrollRect : MonoBehaviour, IBeginDragHandler, IDragHandler
         for (int i = 0; i < _childrenRect.Length; i++) {
             min = _childrenRect[i].parent.TransformPoint(new Vector3(0, _childrenRect[i].offsetMin.y, 0));
             if (min.y > offsetMax.y) {
-                offsetBottomLocal = offsetBottomLocal - new Vector3(0, _childrenRect[i].rect.height * 0.5f, 0);
-                offsetBottomWorld = _childrenRect[i].parent.TransformPoint(offsetBottomLocal);
+                offsetBottomWorld = _childrenRect[i].parent.TransformPoint(offsetBottomLocal - new Vector3(0, _childrenRect[i].rect.height * 0.5f, 0));
+                offsetBottomLocal = offsetBottomLocal - new Vector3(0, _childrenRect[i].rect.height, 0);
                 _childrenRect[i].position = offsetBottomWorld;
                 _childrenRect[i].SetAsLastSibling();
                 _childrenRect[i].GetComponent<InfiniteItem>().DoFirstToLast();
@@ -133,8 +133,8 @@ public class InfiniteScrollRect : MonoBehaviour, IBeginDragHandler, IDragHandler
         for (int i = _childrenRect.Length - 1; i >= 0; i--) {
             max = _childrenRect[i].parent.TransformPoint(new Vector3(0, _childrenRect[i].offsetMax.y, 0));
             if (max.y < offsetMin.y) {
-                offsetTopLocal = offsetTopLocal + new Vector3(0, _childrenRect[i].rect.height * 0.5f, 0);
-                offsetTopWorld = _childrenRect[i].parent.TransformPoint(offsetTopLocal);
+                offsetTopWorld = _childrenRect[i].parent.TransformPoint(offsetTopLocal + new Vector3(0, _childrenRect[i].rect.height * 0.5f, 0));
+                offsetTopLocal = offsetTopLocal + new Vector3(0, _childrenRect[i].rect.height, 0);
                 _childrenRect[i].position = offsetTopWorld;
                 _childrenRect[i].SetAsFirstSibling();
                 _childrenRect[i].GetComponent<InfiniteItem>().DoLastToFirst();
