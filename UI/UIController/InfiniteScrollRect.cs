@@ -69,14 +69,14 @@ public class InfiniteScrollRect : MonoBehaviour, IBeginDragHandler, IDragHandler
         if (inSlowDown) {
             initialVelocity -= dampRate * initialVelocity;
             offsetY = initialVelocity * 0.01f * Time.deltaTime;
-            if (initialVelocity < 1f) {
+            if (Mathf.Abs(initialVelocity) < 1f) {
                 inSlowDown = false;
             }
         }
     }
 
     void LateUpdate() {
-        if (offsetY < 0.001f) {
+        if (Mathf.Abs(offsetY) < 0.001f) {
             return;
         }
 
