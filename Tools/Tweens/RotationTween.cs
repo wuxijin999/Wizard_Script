@@ -1,10 +1,9 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class PositionTween : Tween {
-
+public class RotationTween : Tween {
     protected override void ApplyNewVector3() {
         base.ApplyNewVector3();
-        this.transform.localPosition = CalculateVector3();
+        this.transform.localEulerAngles = CalculateVector3();
     }
 }
