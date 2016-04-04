@@ -23,12 +23,10 @@ public class InfiniteScrollRect : MonoBehaviour, IBeginDragHandler, IDragHandler
     float initialVelocity = 0f;
 
     Action begeinDragCallBack = null;
-    Action dragCallBack = null;
     Action endDragCallBack = null;
 
-    public void RegCallBack(Action _beginCallBack, Action _dragCallBack, Action _endCallBack) {
+    public void RegCallBack(Action _beginCallBack, Action _endCallBack) {
         begeinDragCallBack = _beginCallBack;
-        dragCallBack = _dragCallBack;
         endDragCallBack = _endCallBack;
     }
 
@@ -96,8 +94,11 @@ public class InfiniteScrollRect : MonoBehaviour, IBeginDragHandler, IDragHandler
         offsetY = 0f;
     }
 
-
-
+    /// <summary>
+    /// 顶部越界事件
+    /// </summary>
+    /// <param name="_rect"></param>
+    /// <param name="_childrenRect"></param>
     private void CrossTopBorderEvent(RectTransform _rect, RectTransform[] _childrenRect) {
 
         Vector3 offsetMax = _rect.parent.TransformPoint(new Vector3(0, _rect.offsetMax.y, 0));
@@ -122,6 +123,11 @@ public class InfiniteScrollRect : MonoBehaviour, IBeginDragHandler, IDragHandler
 
     }
 
+    /// <summary>
+    /// 底部越界事件
+    /// </summary>
+    /// <param name="_rect"></param>
+    /// <param name="_childrenRect"></param>
     private void CrossBottomBorderEvent(RectTransform _rect, RectTransform[] _childrenRect) {
 
         Vector3 offsetMin = _rect.parent.TransformPoint(new Vector3(0, _rect.offsetMin.y, 0));
