@@ -67,8 +67,6 @@ public class WindowViewBase {
         info.WinOpenCompleteEvent += OnOpenComplete;
         info.WinCloseCompleteEvent += OnCloseComplete;
 
-
-
     }
 
     protected virtual void PlayOpenAnim() {
