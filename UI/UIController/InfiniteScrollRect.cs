@@ -96,7 +96,7 @@ public class InfiniteScrollRect : MonoBehaviour, IBeginDragHandler, IDragHandler
         inSlowDown = true;
         velocity = eventData.delta.y / Time.deltaTime;
 
-        if (content.transform.y > contentUpBorder || content.transform.y < contentDownBorder) {
+        if (content.transform.position.y > contentUpBorder || content.transform.position.y < contentDownBorder) {
             inSpringback = true;
         }
 
