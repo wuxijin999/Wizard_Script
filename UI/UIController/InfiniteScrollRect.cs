@@ -19,17 +19,63 @@ public class InfiniteScrollRect : MonoBehaviour, IBeginDragHandler, IDragHandler
     RectTransform mRect;
     RectTransform[] childrenRect = null;
     float offsetY = 0f;
+
+    bool dirty = false;
+
     bool inSlowDown = false;
-    float initialVelocity = 0f;
+    float velocity = 0f;
+
+    bool inSpringback = false;
+    float springBackStartY = 0f;
+    float springBackDuration = 0.2f;
+    float springBackVelocityRef = 0f;
 
     Action begeinDragCallBack = null;
     Action endDragCallBack = null;
+
+    private float contentUpBorder = 0f;
+    protected float ContentUpBorder {
+        get {
+            return contentUpBorder;
+        }
+        set {
+            contentUpBorder = value;
+        }
+    }
+
+    private float contentDownBorder = 0f;
+    protected float ContentDownBorder {
+        get {
+            return contentDownBorder;
+        }
+        set {
+            contentDownBorder = value;
+        }
+    }
 
     public void RegCallBack(Action _beginCallBack, Action _endCallBack) {
         begeinDragCallBack = _beginCallBack;
         endDragCallBack = _endCallBack;
     }
 
+    public void ReArrange() {
+
+        mRect = this.transform as RectTransform;
+        childrenRect = new RectTransform[content.childCount];
+        for (int i = 0; i < childrenRect.Length; i++) {
+            childrenRect[i] = content.GetChild(i).transform as RectTransform;
+        }
+
+        Vector3 offsetMaxWorld = mRect.parent.TransformPoint(mRect.localPosition.x, mRect.offsetMax.y + childrenRect[0].rect.height * childrenRect[0].pivot.y, 0);
+        RectTransform lastRect = childrenRect[0];
+        childrenRect[0].position = offsetMaxWorld;
+
+        for (int i = 1; i < childrenRect.Length; i++) {
+            float yRate = lastRect.pivot.y;
+            childrenRect[i].localPosition = lastRect.localPosition - new Vector3(0, lastRect.rect.height * yRate + childrenRect[i].rect.height * (1 - yRate), 0);
+            lastRect = childrenRect[i];
+        }
+    }
 
     public void OnBeginDrag(PointerEventData eventData) {
         inSlowDown = false;
@@ -48,29 +94,64 @@ public class InfiniteScrollRect : MonoBehaviour, IBeginDragHandler, IDragHandler
     public void OnEndDrag(PointerEventData eventData) {
 
         inSlowDown = true;
-        initialVelocity = eventData.delta.y / Time.deltaTime;
+        velocity = eventData.delta.y / Time.deltaTime;
+
+        if (content.transform.y > contentUpBorder || content.transform.y < contentDownBorder) {
+            inSpringback = true;
+        }
+
         if (endDragCallBack != null) {
             endDragCallBack();
         }
     }
 
-    void Start() {
+    protected void ResetPosition() {
         mRect = this.transform as RectTransform;
         childrenRect = new RectTransform[content.childCount];
         for (int i = 0; i < childrenRect.Length; i++) {
             childrenRect[i] = content.GetChild(i).transform as RectTransform;
         }
-        InitializeChildPosition(mRect, childrenRect);
+
+        RectTransform lastRect = childrenRect[0];
+        for (int i = 1; i < childrenRect.Length; i++) {
+            float yRate = lastRect.pivot.y;
+            childrenRect[i].localPosition = lastRect.localPosition - new Vector3(0, lastRect.rect.height * yRate + childrenRect[i].rect.height * (1 - yRate), 0);
+            lastRect = childrenRect[i];
+        }
+    }
+
+    void Start() {
+        ResetPosition();
+        ReArrange();
     }
 
     private void Update() {
         if (inSlowDown) {
-            initialVelocity -= dampRate * initialVelocity;
-            offsetY = initialVelocity * 0.01f * Time.deltaTime;
-            if (Mathf.Abs(initialVelocity) < 1f) {
+            velocity -= dampRate * velocity;
+            offsetY = velocity * 0.01f * Time.deltaTime;
+            if (Mathf.Abs(velocity) < 1f) {
                 inSlowDown = false;
             }
         }
+
+        if (inSpringback) {
+            float recorderY = 0f;
+            float newY = 0f;
+            if (springBackStartY > contentUpBorder) {
+                newY = Mathf.SmoothDamp(springBackStartY, contentUpBorder, ref springBackVelocityRef, springBackDuration);
+            }
+            else {
+                newY = Mathf.SmoothDamp(springBackStartY, contentUpBorder, ref springBackVelocityRef, springBackDuration);
+            }
+
+            offsetY = recorderY - newY;
+
+            if (offsetY < 0.0001f) {
+                inSpringback = false;
+            }
+        }
+
+
     }
 
     void LateUpdate() {
@@ -110,7 +191,7 @@ public class InfiniteScrollRect : MonoBehaviour, IBeginDragHandler, IDragHandler
         for (int i = 0; i < _childrenRect.Length; i++) {
             min = _childrenRect[i].parent.TransformPoint(new Vector3(0, _childrenRect[i].offsetMin.y, 0));
             if (min.y > offsetMax.y) {
-                offsetBottomWorld = _childrenRect[i].parent.TransformPoint(offsetBottomLocal - new Vector3(0, _childrenRect[i].rect.height * 0.5f, 0));
+                offsetBottomWorld = _childrenRect[i].parent.TransformPoint(offsetBottomLocal - new Vector3(0, _childrenRect[i].rect.height * (1f - _childrenRect[i].pivot.y), 0));
                 offsetBottomLocal = offsetBottomLocal - new Vector3(0, _childrenRect[i].rect.height, 0);
                 _childrenRect[i].position = offsetBottomWorld;
                 _childrenRect[i].SetAsLastSibling();
@@ -139,7 +220,7 @@ public class InfiniteScrollRect : MonoBehaviour, IBeginDragHandler, IDragHandler
         for (int i = _childrenRect.Length - 1; i >= 0; i--) {
             max = _childrenRect[i].parent.TransformPoint(new Vector3(0, _childrenRect[i].offsetMax.y, 0));
             if (max.y < offsetMin.y) {
-                offsetTopWorld = _childrenRect[i].parent.TransformPoint(offsetTopLocal + new Vector3(0, _childrenRect[i].rect.height * 0.5f, 0));
+                offsetTopWorld = _childrenRect[i].parent.TransformPoint(offsetTopLocal + new Vector3(0, _childrenRect[i].rect.height * _childrenRect[i].pivot.y, 0));
                 offsetTopLocal = offsetTopLocal + new Vector3(0, _childrenRect[i].rect.height, 0);
                 _childrenRect[i].position = offsetTopWorld;
                 _childrenRect[i].SetAsFirstSibling();
@@ -152,16 +233,7 @@ public class InfiniteScrollRect : MonoBehaviour, IBeginDragHandler, IDragHandler
 
     }
 
-    private void InitializeChildPosition(RectTransform _mRect, RectTransform[] _childrenRect) {
 
-        Vector3 offsetMaxWorld = _mRect.parent.TransformPoint(_mRect.localPosition.x, _mRect.offsetMax.y + _childrenRect[0].rect.height * 0.5f, 0);
-        RectTransform lastRect = _childrenRect[0];
-        _childrenRect[0].position = offsetMaxWorld;
 
-        for (int i = 1; i < _childrenRect.Length; i++) {
-            _childrenRect[i].localPosition = lastRect.localPosition - new Vector3(0, lastRect.rect.height * 0.5f + _childrenRect[i].rect.height * 0.5f, 0);
-            lastRect = _childrenRect[i];
-        }
 
-    }
 }

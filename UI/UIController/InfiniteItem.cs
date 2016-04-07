@@ -8,6 +8,8 @@ public class InfiniteItem : MonoBehaviour {
 
     public Text txtContent;
 
+    public InfiniteScrollRect scrollRect;
+
     public virtual void DoFirstToLast() {
         index++;
         txtContent.text = index.ToString();
