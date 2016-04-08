@@ -10,6 +10,10 @@ public class InfiniteItem : MonoBehaviour {
 
     public InfiniteScrollRect scrollRect;
 
+    protected virtual void Start() {
+
+    }
+
     public virtual void DoFirstToLast() {
         index++;
         txtContent.text = index.ToString();
@@ -17,6 +21,7 @@ public class InfiniteItem : MonoBehaviour {
 
     public virtual void DoLastToFirst() {
         index--;
+
         txtContent.text = index.ToString();
     }
 
