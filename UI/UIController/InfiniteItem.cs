@@ -2,27 +2,32 @@
 using System.Collections;
 using UnityEngine.UI;
 
-public class InfiniteItem : MonoBehaviour {
+[RequireComponent(typeof(RectTransform))]
+public class InfiniteItem : InfiniteRect {
 
     public static int index = 0;
-
+    public static int preIndex = 0;
     public Text txtContent;
-
-    public InfiniteScrollRect scrollRect;
 
     protected virtual void Start() {
 
     }
 
-    public virtual void DoFirstToLast() {
+    public virtual void Init() {
         index++;
         txtContent.text = index.ToString();
     }
 
-    public virtual void DoLastToFirst() {
-        index--;
-
+    public virtual void DoFirstToLast() {
+        index++;
+        preIndex++;
         txtContent.text = index.ToString();
+    }
+
+    public virtual void DoLastToFirst() {
+        txtContent.text = preIndex.ToString();
+        index--;
+        preIndex--;
     }
 
 }

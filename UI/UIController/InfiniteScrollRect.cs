@@ -7,8 +7,10 @@ using System.Collections;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using System;
+using DG.Tweening;
 
-public class InfiniteScrollRect : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler {
+[RequireComponent(typeof(RectTransform))]
+public class InfiniteScrollRect : InfiniteRect, IBeginDragHandler, IDragHandler, IEndDragHandler {
 
     public delegate void ScrollHandler();
     public event ScrollHandler CrossTopEvent;
@@ -18,18 +20,13 @@ public class InfiniteScrollRect : MonoBehaviour, IBeginDragHandler, IDragHandler
     public RectTransform content;
     public float dampRate = 0f;
 
+    InfiniteItem[] infiniteItemArray = null;
     Vector3 lastMousePos = Vector3.one;
     Vector3 mousePos = Vector3.one;
-    RectTransform mRect;
-    RectTransform[] childrenRect = null;
     float offsetY = 0f;
-
-    bool dirty = false;
-
-    bool inSlowDown = false;
     float velocity = 0f;
 
-    bool inSpringback = false;
+    MoveState state;
 
     [SerializeField]
     private float contentUpBorder = 0f;
@@ -54,85 +51,93 @@ public class InfiniteScrollRect : MonoBehaviour, IBeginDragHandler, IDragHandler
 
 
     public void OnBeginDrag(PointerEventData eventData) {
-        inSlowDown = false;
+        if (state == MoveState.Springback) {
+            return;
+        }
+        state = MoveState.Normal;
         lastMousePos = mousePos = mCamera.ScreenToWorldPoint(Input.mousePosition);
     }
 
     public void OnDrag(PointerEventData eventData) {
+        if (state == MoveState.Springback) {
+            return;
+        }
         mousePos = mCamera.ScreenToWorldPoint(Input.mousePosition);
         offsetY = mousePos.y - lastMousePos.y;
         lastMousePos = mousePos;
     }
 
     public void OnEndDrag(PointerEventData eventData) {
-        if (content.transform.localPosition.y > (contentUpBorder + 0.5f)) {
-            inSpringback = true;
-            SmoothMove sMove = content.gameObject.AddMissComponent<SmoothMove>();
-            sMove.MoveTo(new Vector3(this.transform.localPosition.x, contentUpBorder, this.transform.localPosition.z), 0.5f, true, () => {
-                inSpringback = false;
-            });
+        if (state == MoveState.Springback) {
+            return;
         }
-        else if (content.transform.localPosition.y < (contentDownBorder - 0.5f)) {
-            inSpringback = true;
-            SmoothMove sMove = content.gameObject.AddMissComponent<SmoothMove>();
-            sMove.MoveTo(new Vector3(this.transform.localPosition.x, contentDownBorder, this.transform.localPosition.z), 0.5f, true, () => {
-                inSpringback = false;
+        if (content.localPosition.y > (contentUpBorder + 0.5f)) {
+            state = MoveState.Springback;
+            content.DOLocalMoveY(contentUpBorder, 0.5f).SetEase(Ease.OutBack).OnComplete(() => {
+                state = MoveState.Normal;
+            });
+
+        }
+        else if (content.localPosition.y < (contentDownBorder - 0.5f)) {
+            state = MoveState.Springback;
+            content.DOLocalMoveY(contentDownBorder, 0.5f).SetEase(Ease.OutBack).OnComplete(() => {
+                state = MoveState.Normal;
             });
         }
         else {
-            inSlowDown = true;
+            state = MoveState.SlowDown;
             velocity = eventData.delta.y / Time.deltaTime;
         }
     }
 
     protected void ReArrange() {
-        mRect = this.transform as RectTransform;
-        childrenRect = new RectTransform[content.childCount];
-        for (int i = 0; i < childrenRect.Length; i++) {
-            childrenRect[i] = content.GetChild(i).transform as RectTransform;
-        }
+        infiniteItemArray = rectTransform.GetComponentsInChildren<InfiniteItem>();
 
-        RectTransform lastRect = childrenRect[0];
-        for (int i = 1; i < childrenRect.Length; i++) {
-            float yRate = lastRect.pivot.y;
-            childrenRect[i].localPosition = lastRect.localPosition - new Vector3(0, lastRect.rect.height * yRate + childrenRect[i].rect.height * (1 - yRate), 0);
-            lastRect = childrenRect[i];
+        InfiniteItem lastItem = infiniteItemArray[0];
+        for (int i = 1; i < infiniteItemArray.Length; i++) {
+            float yRate = lastItem.rectTransform.pivot.y;
+            infiniteItemArray[i].rectTransform.localPosition = lastItem.rectTransform.localPosition
+                - new Vector3(0, lastItem.rectTransform.rect.height * yRate + infiniteItemArray[i].rectTransform.rect.height * (1 - yRate), 0);
+            lastItem = infiniteItemArray[i];
         }
     }
 
     private void ResetPosition() {
+        infiniteItemArray = rectTransform.GetComponentsInChildren<InfiniteItem>();
 
-        mRect = this.transform as RectTransform;
-        childrenRect = new RectTransform[content.childCount];
-        for (int i = 0; i < childrenRect.Length; i++) {
-            childrenRect[i] = content.GetChild(i).transform as RectTransform;
-        }
+        Vector3 offsetMaxWorld = minmaxCornerWorld * 0.5f + maxmaxPositionWorld * 0.5f;
+        content.position = parent.TransformPoint(center.x, offsetMax.y - content.rect.height * 0.5f, 0);
+        InfiniteItem lastItem = infiniteItemArray[0];
+        lastItem.rectTransform.position = offsetMaxWorld - new Vector3(0, (lastItem.minmaxCornerWorld - lastItem.minminPositionWorld).y * 0.5f, 0);
 
-        Vector3 offsetMaxWorld = mRect.parent.TransformPoint(mRect.localPosition.x, mRect.offsetMax.y + childrenRect[0].rect.height * childrenRect[0].pivot.y, 0);
-        RectTransform lastRect = childrenRect[0];
-        childrenRect[0].position = offsetMaxWorld;
-
-        for (int i = 1; i < childrenRect.Length; i++) {
-            float yRate = lastRect.pivot.y;
-            childrenRect[i].localPosition = lastRect.localPosition - new Vector3(0, lastRect.rect.height * yRate + childrenRect[i].rect.height * (1 - yRate), 0);
-            lastRect = childrenRect[i];
+        for (int i = 1; i < infiniteItemArray.Length; i++) {
+            float yRate = lastItem.rectTransform.pivot.y;
+            infiniteItemArray[i].rectTransform.localPosition = lastItem.rectTransform.localPosition
+                - new Vector3(0, lastItem.rect.height * yRate + infiniteItemArray[i].rectTransform.rect.height * (1 - yRate), 0);
+            lastItem = infiniteItemArray[i];
         }
     }
     void Start() {
         ResetPosition();
+        for (int i = 0; i < infiniteItemArray.Length; i++) {
+            infiniteItemArray[i].Init();
+        }
+        InfiniteItem.preIndex = InfiniteItem.index - infiniteItemArray.Length;
         contentDownBorder = content.transform.localPosition.y;
-        contentUpBorder = contentDownBorder + 1600f;
+        contentUpBorder = contentDownBorder + 16000f;
     }
 
     private void Update() {
-        if (inSlowDown) {
-            velocity -= dampRate * velocity;
-            if (Mathf.Abs(velocity) < 1f) {
-                inSlowDown = false;
-            }
-            else {
-                offsetY = velocity * 0.01f * Time.deltaTime;
-            }
+        switch (state) {
+            case MoveState.SlowDown:
+                velocity -= dampRate * velocity;
+                if (Mathf.Abs(velocity) < 1f) {
+                    state = MoveState.Normal;
+                }
+                else {
+                    offsetY = velocity * 0.01f * Time.deltaTime;
+                }
+                break;
         }
 
     }
@@ -141,53 +146,52 @@ public class InfiniteScrollRect : MonoBehaviour, IBeginDragHandler, IDragHandler
         if (Mathf.Abs(offsetY) < 0.001f) {
             return;
         }
-
         content.position += new Vector3(0, offsetY, 0);
-
-        if (inSlowDown) {
-            float newY = Mathf.Clamp(content.localPosition.y, contentDownBorder, contentUpBorder);
-            content.localPosition = new Vector3(content.localPosition.x, newY, content.localPosition.z);
+        switch (state) {
+            case MoveState.Normal:
+                break;
+            case MoveState.SlowDown:
+                float newY = Mathf.Clamp(content.localPosition.y, contentDownBorder, contentUpBorder);
+                content.localPosition = new Vector3(content.localPosition.x, newY, content.localPosition.z);
+                break;
+            case MoveState.Springback:
+                break;
         }
 
-        if (inSpringback || content.localPosition.y > contentUpBorder || content.localPosition.y < contentDownBorder) {
-
+        if (offsetY > 0f) {
+            if (content.localPosition.y < contentUpBorder) {
+                ProcessCrossTopBorder();
+            }
         }
         else {
-            for (int i = 0; i < childrenRect.Length; i++) {
-                childrenRect[i] = content.GetChild(i).transform as RectTransform;
-            }
-            if (offsetY > 0f) {
-                ProcessCrossTopBorder(mRect, childrenRect);
-            }
-            else {
-                ProcessCrossBottomBorder(mRect, childrenRect);
+            if (content.localPosition.y > contentDownBorder) {
+                ProcessCrossBottomBorder();
             }
         }
-
         offsetY = 0f;
     }
 
     /// <summary>
     /// 顶部越界事件
     /// </summary>
-    /// <param name="_rect"></param>
-    /// <param name="_childrenRect"></param>
-    private void ProcessCrossTopBorder(RectTransform _rect, RectTransform[] _childrenRect) {
+    private void ProcessCrossTopBorder() {
+        infiniteItemArray = rectTransform.GetComponentsInChildren<InfiniteItem>();
 
-        Vector3 offsetMax = _rect.parent.TransformPoint(new Vector3(0, _rect.offsetMax.y, 0));
-        RectTransform lastRect = _childrenRect[_childrenRect.Length - 1];
-        Vector3 offsetBottomLocal = new Vector3(0, lastRect.offsetMin.y, 0);
-        Vector3 offsetBottomWorld = lastRect.parent.TransformPoint(offsetBottomLocal);
+        Vector3 offsetMax = minmaxCornerWorld * 0.5f + maxmaxPositionWorld * 0.5f;
+        InfiniteItem lastItem = infiniteItemArray[infiniteItemArray.Length - 1];
+        Vector3 offsetBottomLocal = new Vector3(0, lastItem.offsetMin.y, 0);
+        Vector3 offsetBottomWorld = lastItem.parent.TransformPoint(offsetBottomLocal);
 
         Vector3 min = Vector3.zero;
-        for (int i = 0; i < _childrenRect.Length; i++) {
-            min = _childrenRect[i].parent.TransformPoint(new Vector3(0, _childrenRect[i].offsetMin.y, 0));
+        for (int i = 0; i < infiniteItemArray.Length; i++) {
+            min = infiniteItemArray[i].parent.TransformPoint(new Vector3(0, infiniteItemArray[i].offsetMin.y, 0));
             if (min.y > offsetMax.y) {
-                offsetBottomWorld = _childrenRect[i].parent.TransformPoint(offsetBottomLocal - new Vector3(0, _childrenRect[i].rect.height * (1f - _childrenRect[i].pivot.y), 0));
-                offsetBottomLocal = offsetBottomLocal - new Vector3(0, _childrenRect[i].rect.height, 0);
-                _childrenRect[i].position = offsetBottomWorld;
-                _childrenRect[i].SetAsLastSibling();
-                _childrenRect[i].GetComponent<InfiniteItem>().DoFirstToLast();
+                offsetBottomWorld = infiniteItemArray[i].parent.TransformPoint(offsetBottomLocal
+                    - new Vector3(0, infiniteItemArray[i].rect.height * (1f - infiniteItemArray[i].pivot.y), 0));
+                offsetBottomLocal = offsetBottomLocal - new Vector3(0, infiniteItemArray[i].rect.height, 0);
+                infiniteItemArray[i].rectTransform.position = offsetBottomWorld;
+                infiniteItemArray[i].rectTransform.SetAsLastSibling();
+                infiniteItemArray[i].DoFirstToLast();
                 if (CrossTopEvent != null) {
                     CrossTopEvent();
                 }
@@ -204,22 +208,24 @@ public class InfiniteScrollRect : MonoBehaviour, IBeginDragHandler, IDragHandler
     /// </summary>
     /// <param name="_rect"></param>
     /// <param name="_childrenRect"></param>
-    private void ProcessCrossBottomBorder(RectTransform _rect, RectTransform[] _childrenRect) {
+    private void ProcessCrossBottomBorder() {
+        infiniteItemArray = rectTransform.GetComponentsInChildren<InfiniteItem>();
 
-        Vector3 offsetMin = _rect.parent.TransformPoint(new Vector3(0, _rect.offsetMin.y, 0));
-        RectTransform firstRect = _childrenRect[0];
-        Vector3 offsetTopLocal = new Vector3(0, firstRect.offsetMax.y, 0);
-        Vector3 offsetTopWorld = firstRect.parent.TransformPoint(offsetTopLocal);
+        Vector3 offsetMin = minminPositionWorld * 0.5f + maxminPositionWorld * 0.5f;
+        InfiniteItem firstItem = infiniteItemArray[0];
+        Vector3 offsetTopLocal = new Vector3(0, firstItem.offsetMax.y, 0);
+        Vector3 offsetTopWorld = firstItem.parent.TransformPoint(offsetTopLocal);
 
         Vector3 max = Vector3.zero;
-        for (int i = _childrenRect.Length - 1; i >= 0; i--) {
-            max = _childrenRect[i].parent.TransformPoint(new Vector3(0, _childrenRect[i].offsetMax.y, 0));
+        for (int i = infiniteItemArray.Length - 1; i >= 0; i--) {
+            max = infiniteItemArray[i].parent.TransformPoint(new Vector3(0, infiniteItemArray[i].offsetMax.y, 0));
             if (max.y < offsetMin.y) {
-                offsetTopWorld = _childrenRect[i].parent.TransformPoint(offsetTopLocal + new Vector3(0, _childrenRect[i].rect.height * _childrenRect[i].pivot.y, 0));
-                offsetTopLocal = offsetTopLocal + new Vector3(0, _childrenRect[i].rect.height, 0);
-                _childrenRect[i].position = offsetTopWorld;
-                _childrenRect[i].SetAsFirstSibling();
-                _childrenRect[i].GetComponent<InfiniteItem>().DoLastToFirst();
+                offsetTopWorld = infiniteItemArray[i].parent.TransformPoint(offsetTopLocal
+                    + new Vector3(0, infiniteItemArray[i].rect.height * infiniteItemArray[i].pivot.y, 0));
+                offsetTopLocal = offsetTopLocal + new Vector3(0, infiniteItemArray[i].rect.height, 0);
+                infiniteItemArray[i].rectTransform.position = offsetTopWorld;
+                infiniteItemArray[i].rectTransform.SetAsFirstSibling();
+                infiniteItemArray[i].DoLastToFirst();
                 if (CrossBottomEvent != null) {
                     CrossBottomEvent();
                 }
@@ -231,7 +237,10 @@ public class InfiniteScrollRect : MonoBehaviour, IBeginDragHandler, IDragHandler
 
     }
 
-
-
+    public enum MoveState {
+        Normal,
+        SlowDown,
+        Springback,
+    }
 
 }
