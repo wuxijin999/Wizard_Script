@@ -20,11 +20,8 @@ public class WindowMgr : Singleton<WindowMgr> {
     public T Open<T>() where T : WindowViewBase, new() {
         T win = new T();
 
-        for (int i = 0; i < activedWin.Count; i++) {
-            if (activedWin[i] is T) {
-                Debug.Log(string.Format("<color=yellow>{0}</color>已经打开！", activedWin[i].GetType().FullName));
-                return null;
-            }
+        if (CheckOpen<T>()) {
+            return null;
         }
 
         for (int i = 0; i < unActivedWin.Count; i++) {
@@ -53,11 +50,8 @@ public class WindowMgr : Singleton<WindowMgr> {
 
         T win = new T();
 
-        for (int i = 0; i < activedWin.Count; i++) {
-            if (activedWin[i] is T) {
-                Debug.Log(string.Format("<color=yellow>{0}</color>已经打开！", activedWin[i].GetType().FullName));
-                return null;
-            }
+        if (CheckOpen<T>()) {
+            return null;
         }
 
         for (int i = 0; i < unActivedWin.Count; i++) {
@@ -134,4 +128,15 @@ public class WindowMgr : Singleton<WindowMgr> {
     }
 
 
+    private bool CheckOpen<T>() where T : WindowViewBase {
+
+        for (int i = 0; i < activedWin.Count; i++) {
+            if (activedWin[i] is T) {
+                Debug.Log(string.Format("<color=yellow>{0}</color>已经打开！", activedWin[i].GetType().FullName));
+                return true;
+            }
+        }
+
+        return false;
+    }
 }
