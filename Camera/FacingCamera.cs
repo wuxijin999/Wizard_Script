@@ -3,13 +3,13 @@ using System.Collections;
 
 public class FacingCamera : MonoBehaviour {
 
-    public Camera camera;
+    public Camera mCamera;
 
     public void Init(Camera _camera) {
-        camera = _camera;
+        mCamera = _camera;
     }
 
     private void LateUpdate() {
-        this.transform.rotation = camera.transform.rotation;
+        this.transform.rotation = mCamera.transform.rotation;
     }
 }

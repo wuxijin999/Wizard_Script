@@ -6,7 +6,7 @@ using System;
 
 public class HandShank : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, IDragHandler, IEndDragHandler, IPointerUpHandler {
 
-    public delegate void HandShankHandler(Vector2 _vector2);
+    public delegate void HandShankHandler(float _speedRate, Vector2 _vector2);
     public event HandShankHandler DirectionUpdateEvent;
 
     public Camera mCamera;
@@ -27,7 +27,7 @@ public class HandShank : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, 
         }
     }
 
-    void Awake() {
+    protected void Awake() {
         fore.gameObject.SetActive(false);
         backGround.gameObject.SetActive(false);
     }
@@ -80,11 +80,12 @@ public class HandShank : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, 
     }
 
     private void Update() {
-        if (DirectionUpdateEvent != null) {
-            DirectionUpdateEvent(CalculateDirection());
-        }
 
-        Debug.Log(CalculateDirection());
+        if (state == HandShankState.Active) {
+            if (DirectionUpdateEvent != null) {
+                DirectionUpdateEvent(CalculateSpeedRate(), CalculateDirection());
+            }
+        }
     }
 
     private Vector2 CalculateDirection() {
@@ -98,6 +99,15 @@ public class HandShank : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, 
             return direction;
         }
 
+    }
+
+    private float CalculateSpeedRate() {
+        if (state == HandShankState.UnActive) {
+            return 0f;
+        }
+        else {
+            return Mathf.Clamp(Vector3.Distance(fore.transform.position, center) / radius, 0, 1f);
+        }
     }
 
     private Vector3 AmendMousePosition() {

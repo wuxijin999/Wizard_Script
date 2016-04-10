@@ -1,10 +1,12 @@
 ﻿using UnityEngine;
 public interface IMove {
 
+    void MoveTo(Vector3 position);
     void MoveTo(Vector3 position, float speed);
     void MoveTo(Vector3 position, float speed, float acceleration);
     void MoveTo(Transform transform, float speed);
     void MoveTo(Transform transform, float speed, float acceleration);
+    void MoveStep(Vector3 deltaVector3);
     void Follow(Transform transform, Vector3 relativePosition);
     void StopFollow();
 }
