@@ -16,9 +16,9 @@ public class SingletonMonobehavior<T> : MonoBehaviour where T : Component {
         if (instance == null) {
             instance = this as T;
         }
-        else {
-            DestroyImmediate(instance);
-            instance = this as T;
+   
+        if (this != SingletonMonoBehaviour<T>.Instance) {
+            UnityEngine.Object.Destroy(this);
         }
 
     }
