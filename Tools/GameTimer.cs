@@ -26,12 +26,23 @@ public class GameTimer : SingletonMonobehavior<GameTimer> {
 
 
     public class Clock {
-        public Clock() {
-
+        public DateTime triggerTimer;
+        public int repeatInterval;
+        public int repeatTimes;
+        public Action callBack;
+        public Clock(DateTime _dateTime, int _repeatInterval, int _repeatTimes, Action _callBack) {
+            triggerTimer = _dateTime;
+            repeatInterval = _repeatInterval;
+            repeatTimes = _repeatTimes;
+            callBack = _callBack;
         }
 
         public void Excute() {
-
+            if (callBack != null) {
+                callBack();
+            }
+            triggerTimer = System.DateTime.Now + new TimeSpan(TimeSpan.TicksPerSecond * repeatInterval);
+            repeatTimes--;
         }
     }
 
@@ -59,12 +70,22 @@ public class GameTimer : SingletonMonobehavior<GameTimer> {
     }
 
 
-    public void AddClock() {//固定时刻触发
-
+    public void AddClock(DateTime _dateTime, int _repeatInterval, int _repeatTimes, Action _callBack) {//固定时刻触发
+        if (_dateTime < System.DateTime.Now || _repeatInterval < 1 || _repeatTimes < 1 || _callBack == null) {
+            Debug.Log("Invaild clock!");
+            return;
+        }
+        Clock clock = new Clock(_dateTime, _repeatInterval, _repeatTimes, _callBack);
+        clockList.Add(clock);
     }
 
-    public void DelClock() {
-
+    public void DelClock(Action _callBack) {
+        for (int i = 0; i < clockList.Count; i++) {
+            if (clockList[i].callBack == _callBack) {
+                clockList.Remove(clockList[i]);
+                break;
+            }
+        }
     }
 
     protected override void Awake() {
@@ -95,7 +116,17 @@ public class GameTimer : SingletonMonobehavior<GameTimer> {
     }
 
     private void ProcessClock() {
-
+        for (int i = 0; i < clockList.Count; i++) {
+            if (System.DateTime.Now > clockList[i].triggerTimer) {
+                clockList[i].Excute();
+                if (clockList[i].repeatTimes < 1) {
+                    clockList.RemoveAt(i);
+                }
+            }
+        }
     }
+
+
+
 
 }
