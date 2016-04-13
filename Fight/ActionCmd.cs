@@ -11,11 +11,10 @@ public enum CmdType {
     Dance,
 }
 
-
 public class ActionCmd {
 
+    protected Actor owner;
     protected CmdType type;
-
     protected bool mCompleteFlag;
     public bool completeFlag {
         get {
@@ -23,8 +22,9 @@ public class ActionCmd {
         }
     }
 
-    public ActionCmd(CmdType _type) {
+    public ActionCmd(CmdType _type,Actor _owner) {
         type = _type;
+        owner = _owner;
     }
 
     public virtual void Excute() {
