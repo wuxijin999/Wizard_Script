@@ -24,7 +24,6 @@ public class GameTimer : SingletonMonobehavior<GameTimer> {
         }
     }
 
-
     public class Clock {
         public DateTime triggerTimer;
         public int repeatInterval;
@@ -45,7 +44,6 @@ public class GameTimer : SingletonMonobehavior<GameTimer> {
             repeatTimes--;
         }
     }
-
 
     List<Timer> timerList = new List<Timer>();
     List<Clock> clockList = new List<Clock>();
@@ -112,7 +110,6 @@ public class GameTimer : SingletonMonobehavior<GameTimer> {
                 timerList[i].Excute();
             }
         }
-
     }
 
     private void ProcessClock() {
@@ -125,8 +122,6 @@ public class GameTimer : SingletonMonobehavior<GameTimer> {
             }
         }
     }
-
-
 
 
 }
