@@ -1,26 +1,42 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using ActionCommand;
 
 public class ActionCmdProcessor {
 
-    Queue<ActionCmd> commandQueue = new Queue<ActionCmd>();
+    Queue<ActionCmd> cmdQueue = new Queue<ActionCmd>();
 
     ActionCmd actionCmd = null;
     public void PuctCmd(ActionCmd _cmd) {
-        commandQueue.Enqueue(_cmd);
+        cmdQueue.Enqueue(_cmd);
     }
 
 
     public void Excute() {
-        if (commandQueue.Count < 1) {
+        if (cmdQueue.Count < 1) {
             return;
         }
-        actionCmd = commandQueue.Peek();
-        actionCmd.Excute();
+        actionCmd = cmdQueue.Peek();
         if (actionCmd.completeFlag) {
-            commandQueue.Dequeue();
+            actionCmd.End();
+            cmdQueue.Dequeue();
+            if (cmdQueue.Count > 0) {
+                actionCmd = cmdQueue.Peek();
+                actionCmd.Begin();
+            }
         }
+        else {
+            actionCmd.Excute();
+            if (actionCmd.completeFlag) {
+                cmdQueue.Dequeue();
+                if (cmdQueue.Count > 0) {
+                    actionCmd = cmdQueue.Peek();
+                    actionCmd.Begin();
+                }
+            }
+        }
+
     }
 
 
