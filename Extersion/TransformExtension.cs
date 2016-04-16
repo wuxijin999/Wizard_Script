@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public static class TransformExtension {
 
@@ -25,5 +26,25 @@ public static class TransformExtension {
         }
     }
 
+
+    public static T[] GetComponentsInChildren<T>(this Transform transform, bool includeInactive, bool includeSelf) where T : Component {
+
+        if (includeSelf) {
+            return transform.GetComponentsInChildren<T>(includeInactive);
+        }
+        else {
+            int childCount = transform.childCount;
+            List<T> list = new List<T>();
+            T t = null;
+            for (int i = 0; i < childCount; i++) {
+                t = transform.GetComponent<T>();
+                if (t != null) {
+                    list.Add(t);
+                }
+            }
+            return list.ToArray();
+        }
+
+    }
 
 }
