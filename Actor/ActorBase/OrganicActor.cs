@@ -8,7 +8,7 @@ public class OrganicActor : Actor, IMove {
     }
 
     public void MoveStep(Vector3 deltaVector3) {
-        throw new NotImplementedException();
+        this.transform.position += deltaVector3;
     }
 
     public void MoveTo(Vector3 position) {
