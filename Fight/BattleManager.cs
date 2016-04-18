@@ -14,16 +14,25 @@ public class BattleManager : Singleton<BattleManager> {
     HostileActorModule hActorModule;
     NeutralActorModule nActorModule;
 
+    SkillManager skillManager;
+
+
+    public void Init() {
+        BattleRound++;
+        skillManager = new SkillManager();
+        fActorModule = new FriendlyActorModule();
+        hActorModule = new HostileActorModule();
+        nActorModule = new NeutralActorModule();
+    }
+
     public int AllocateActorInstanceId() {
 
         return ActorInstanceId++;
     }
 
-    public void Init() {
-        BattleRound++;
-        fActorModule = new FriendlyActorModule();
-        hActorModule = new HostileActorModule();
-        nActorModule = new NeutralActorModule();
+    public int AllocateSkillInstanceId() {
+
+        return skillManager.AllocateSkillInstanceId();
     }
 
     /// <summary>
@@ -61,7 +70,7 @@ public class BattleManager : Singleton<BattleManager> {
         MonsterActor enemy = null;
         for (int i = 0; i < enemyInstIdList.Count; i++) {
             enemy = hActorModule.EnemyDict[enemyInstIdList[i]];
-            if (enemy.Category==_category) {
+            if (enemy.Category == _category) {
                 retList.Add(enemy);
             }
         }
@@ -82,7 +91,7 @@ public class BattleManager : Singleton<BattleManager> {
         MonsterActor enemy = null;
         for (int i = 0; i < enemyInstIdList.Count; i++) {
             enemy = hActorModule.EnemyDict[enemyInstIdList[i]];
-            if (enemy.Level >=_minLevel && enemy.Level<=_maxLevel) {
+            if (enemy.Level >= _minLevel && enemy.Level <= _maxLevel) {
                 retList.Add(enemy);
             }
         }

@@ -1,9 +1,20 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System;
 
-public class HeroActor : OrganicActor {
+public class HeroActor : OrganicActor, IAttack {
 
     HandShankResponser handShankResponser;
+
+    public void CastSkill(int skillId, Vector3 position) {
+        Skill skill = new Skill(skillId);
+
+    }
+
+    public void CastSkill(int skillId, Actor target) {
+        Skill skill = new Skill(skillId);
+
+    }
 
     protected override void Awake() {
         base.Awake();

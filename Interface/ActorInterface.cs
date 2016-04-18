@@ -29,8 +29,8 @@ public interface IProperty {
 
 public interface IAttack {
 
-    void CastSkill(int skillId, int skillInstId, Actor target);
-    void CastSkill(int skillId,int skillInstId,Vector3 position);
+    void CastSkill(int skillId, Actor target);
+    void CastSkill(int skillId,Vector3 position);
 
 }
 
