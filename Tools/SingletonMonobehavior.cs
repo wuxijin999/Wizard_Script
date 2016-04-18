@@ -13,6 +13,8 @@ public class SingletonMonobehavior<T> : MonoBehaviour where T : Component {
 
     protected virtual void Awake() {
 
+
+
         if (instance == null) {
             instance = this as T;
         }

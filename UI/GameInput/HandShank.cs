@@ -4,7 +4,7 @@ using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using System;
 
-public class HandShank : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, IDragHandler, IEndDragHandler, IPointerUpHandler {
+public class HandShank : SingletonMonobehavior<HandShank>, IPointerDownHandler, IBeginDragHandler, IDragHandler, IEndDragHandler, IPointerUpHandler {
 
     public delegate void HandShankHandler(float _speedRate, Vector2 _vector2);
     public event HandShankHandler DirectionUpdateEvent;
@@ -27,7 +27,8 @@ public class HandShank : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, 
         }
     }
 
-    protected void Awake() {
+    protected override void Awake() {
+        base.Awake();
         fore.gameObject.SetActive(false);
         backGround.gameObject.SetActive(false);
     }
