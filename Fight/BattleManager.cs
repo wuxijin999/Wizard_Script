@@ -15,6 +15,7 @@ public class BattleManager : Singleton<BattleManager> {
     NeutralActorModule nActorModule;
 
     SkillManager skillManager;
+    HitDataPool hitDataPool;
 
 
     public void Init() {
@@ -99,6 +100,14 @@ public class BattleManager : Singleton<BattleManager> {
         return retList;
     }
 
+    public HitData QueryHitData(int _hitId) {
+
+        return hitDataPool.QueryHitData(_hitId);
+    }
+
+    public void ProcessHitedActor(List<Actor> _actorList) {
+
+    }
     protected class FriendlyActorModule {
 
         private HeroActor leader;
