@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-namespace ActionCommand {
+namespace Fight {
     public class CastSkillCmd : ActionCmd {
 
         public CastSkillCmd(CmdType _type, Actor _owner) :

@@ -2,7 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 
-namespace ActionCommand {
+namespace Fight {
     public enum CmdType {
         None,
         MoveTo,

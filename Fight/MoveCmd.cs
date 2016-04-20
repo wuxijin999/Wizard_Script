@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-namespace ActionCommand {
+namespace Fight {
     public class MoveCmd : ActionCmd {
 
         Vector3 targetPosition = Vector3.zero;

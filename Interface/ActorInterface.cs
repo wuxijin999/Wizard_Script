@@ -1,41 +1,46 @@
 ﻿using UnityEngine;
-public interface IMove {
 
-    void MoveTo(Vector3 position);
-    void MoveTo(Vector3 position, float speed);
-    void MoveTo(Vector3 position, float speed, float acceleration);
-    void MoveTo(Transform transform, float speed);
-    void MoveTo(Transform transform, float speed, float acceleration);
-    void MoveStep(Vector3 deltaVector3);
-    void Follow(Transform transform, Vector3 relativePosition);
-    void StopFollow();
-}
+namespace Fight {
 
-public enum FightPropertyType {
-    Hp,
-    MaxHp,
-    Attack,
-    Defence,
-    MoveSpeed,
-    AttackSpeed,
+    public interface IMove {
 
-}
-public interface IProperty {
+        void MoveTo(Vector3 position);
+        void MoveTo(Vector3 position, float speed);
+        void MoveTo(Vector3 position, float speed, float acceleration);
+        void MoveTo(Transform transform, float speed);
+        void MoveTo(Transform transform, float speed, float acceleration);
+        void MoveStep(Vector3 deltaVector3);
+        void Follow(Transform transform, Vector3 relativePosition);
+        void StopFollow();
+    }
 
-    int QueryProperty(FightPropertyType propertyType);
-    void IncreaseProperty(FightPropertyType propertyType, int value);
-    void DecreaseProperty(FightPropertyType propertyType, int value);
-}
+    public enum FightPropertyType {
+        Hp,
+        MaxHp,
+        Attack,
+        Defence,
+        MoveSpeed,
+        AttackSpeed,
 
-public interface IAttack {
+    }
+    public interface IProperty {
 
-    void CastSkill(int skillId, Actor target);
-    void CastSkill(int skillId,Vector3 position);
+        int QueryProperty(FightPropertyType propertyType);
+        void IncreaseProperty(FightPropertyType propertyType, int value);
+        void DecreaseProperty(FightPropertyType propertyType, int value);
+    }
 
-}
+    public interface IAttack {
 
-public interface IHurt {
+        void CastSkill(int skillId, Actor target);
+        void CastSkill(int skillId, Vector3 position);
 
-    void DealHurt();
+    }
+
+    public interface IHurt {
+
+        void DealHurt();
+
+    }
 
 }

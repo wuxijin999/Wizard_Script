@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
-using ActionCommand;
+using Fight;
 
 public class ActionCmdProcessor {
 
