@@ -5,7 +5,7 @@ namespace Fight {
 
     public class BodyStateProcessor {
 
-        public void Begin() {
+        public void Begin(HitData _data) {
 
         }
 
@@ -13,11 +13,11 @@ namespace Fight {
 
         }
 
-        protected virtual void OnBegin() {
+        public virtual void DoAction() {
 
         }
 
-        protected virtual void DoAction() {
+        protected virtual void OnBegin() {
 
         }
 
