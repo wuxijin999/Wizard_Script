@@ -27,7 +27,7 @@ namespace Fight {
             base.DoAction();
 
             if (isRise) {
-                float y = Mathf.Lerp(startY, targetY, (Time.time - startTime) / riseTimer);
+                float y = Mathf.Lerp(startY, targetY, Mathf.Clamp01((Time.time - startTime) / riseTimer));
                 transform.position = new Vector3(transform.position.x, y, transform.position.z);
                 if (transform.position.y > targetY) {
                     isRise = false;

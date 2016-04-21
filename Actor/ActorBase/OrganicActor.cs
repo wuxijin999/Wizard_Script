@@ -35,6 +35,12 @@ namespace Fight {
         public void StopFollow() {
             throw new NotImplementedException();
         }
+
+        protected override void Update() {
+            base.Update();
+
+        }
+
     }
 
 }
