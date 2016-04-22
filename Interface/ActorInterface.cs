@@ -2,6 +2,10 @@
 
 namespace Fight {
 
+    public interface ILife {
+        void Born();
+        void Dead();
+    }
     public interface IMove {
 
         void MoveTo(Vector3 position);
@@ -10,6 +14,7 @@ namespace Fight {
         void MoveTo(Transform transform, float speed);
         void MoveTo(Transform transform, float speed, float acceleration);
         void MoveStep(Vector3 deltaVector3);
+        void RotateTo(Quaternion _rotation);
         void Follow(Transform transform, Vector3 relativePosition);
         void StopFollow();
     }

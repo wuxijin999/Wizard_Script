@@ -89,7 +89,7 @@ public class CameraCtrl : MonoBehaviour {
     private void LateUpdate() {
         if (FollowObj != null) {
             this.transform.position = FollowObj.position;
-            this.transform.rotation = FollowObj.rotation;
+            //this.transform.rotation = FollowObj.rotation;
         }
 
         if (dirty) {

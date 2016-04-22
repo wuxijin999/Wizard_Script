@@ -1,9 +1,10 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System;
 
 namespace Fight {
 
-    public class Actor {
+    public class Actor : ILife {
 
         protected int instanceId;
         public int InstanceId {
@@ -31,8 +32,13 @@ namespace Fight {
             actorTransform = _transform;
         }
 
+        public virtual void Born() {
 
+        }
 
+        public virtual void Dead() {
+
+        }
     }
 
 

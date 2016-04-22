@@ -14,6 +14,14 @@ namespace Fight {
             handShankResponser.speed = 5f;
         }
 
+        public override void Born() {
+            base.Born();
+        }
+
+        public override void Dead() {
+            base.Dead();
+        }
+
         public void CastSkill(int skillId, Vector3 position) {
             Skill skill = new Skill(skillId);
 
