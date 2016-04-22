@@ -11,6 +11,11 @@ namespace Fight {
                 return category;
             }
         }
+
+        public MonsterActor(ActorTransform _transform)
+            : base(_transform) {
+
+        }
     }
 
 }

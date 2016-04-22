@@ -3,7 +3,7 @@ using System.Collections;
 
 namespace Fight {
 
-    public class Actor : MonoBehaviour {
+    public class Actor {
 
         protected int instanceId;
         public int InstanceId {
@@ -19,33 +19,19 @@ namespace Fight {
             }
         }
 
-        protected virtual void Awake() {
+        protected ActorTransform actorTransform;
+        public ActorTransform aTransform {
+            get {
+                return actorTransform;
+            }
+        }
+
+        public Actor(ActorTransform _transform) {
             instanceId = BattleManager.Instance.AllocateActorInstanceId();
+            actorTransform = _transform;
         }
 
-        protected virtual void OnEnable() {
-        }
 
-        protected virtual void Start() {
-        }
-
-        protected virtual void FixedUpdate() {
-
-        }
-        protected virtual void Update() {
-        }
-
-        protected virtual void LateUpdate() {
-
-        }
-
-        protected virtual void OnDisable() {
-
-        }
-
-        protected virtual void OnDestroy() {
-
-        }
 
     }
 

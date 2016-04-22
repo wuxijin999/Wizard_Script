@@ -8,7 +8,7 @@ namespace Fight {
         Transform transform = null;
         public MoveCmd(CmdType _type, Actor _owner, Vector3 _targetPosition)
             : base(_type, _owner) {
-            transform = _owner.transform;
+            transform = _owner.aTransform.transform;
             targetPosition = _targetPosition;
         }
 

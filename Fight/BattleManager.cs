@@ -50,9 +50,11 @@ namespace Fight {
             List<int> enemyInstIdList = hActorModule.EnemyInstIdList;
             MonsterActor enemy = null;
             float distance = 0f;
+            Vector3 v3;
             for (int i = 0; i < enemyInstIdList.Count; i++) {
                 enemy = hActorModule.EnemyDict[enemyInstIdList[i]];
-                distance = Vector2.Distance(_center, new Vector2(enemy.transform.position.x, enemy.transform.position.z));
+                v3 = enemy.aTransform.transform.position;
+                distance = Vector2.Distance(_center, new Vector2(v3.x, v3.z));
                 if (distance < _radius) {
                     retList.Add(enemy);
                 }

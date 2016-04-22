@@ -4,12 +4,16 @@ using System;
 
 namespace Fight {
     public class OrganicActor : Actor, IMove {
+
+        public OrganicActor(ActorTransform _transform) : base(_transform) {
+
+        }
         public void Follow(Transform transform, Vector3 relativePosition) {
             throw new NotImplementedException();
         }
 
         public void MoveStep(Vector3 deltaVector3) {
-            this.transform.position += deltaVector3;
+            this.actorTransform.transform.position += deltaVector3;
         }
 
         public void MoveTo(Vector3 position) {
@@ -36,10 +40,9 @@ namespace Fight {
             throw new NotImplementedException();
         }
 
-        protected override void Update() {
-            base.Update();
 
-        }
+
+
 
     }
 
