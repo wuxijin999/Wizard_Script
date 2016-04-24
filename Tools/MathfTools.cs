@@ -27,4 +27,9 @@ public class MathfTools {
 
         return type;
     }
+
+    public static float FreeFall(float _startY, float _time) {
+        float deltaY = 0.5f * Const.GRAVITY_RATE * _time * _time;
+        return _startY - deltaY;
+    }
 }

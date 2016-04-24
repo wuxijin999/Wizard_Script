@@ -9,8 +9,9 @@ public class ActorTransform : MonoBehaviour {
     public bool HeightSyncable {
         get; set;
     }
-    public bool IsCloseToGround() {
-        return this.heightSynchronizer.IsCloseToGround();
+
+    public bool IsUnderGround() {
+        return this.heightSynchronizer.IsUnderGround();
     }
 
     protected virtual void Awake() {
@@ -32,8 +33,8 @@ public class ActorTransform : MonoBehaviour {
     }
 
     protected virtual void LateUpdate() {
+        heightSynchronizer.MeasureHeight();
         if (HeightSyncable) {
-            heightSynchronizer.MeasureHeight();
             heightSynchronizer.UpdateHeight();
         }
     }
@@ -62,6 +63,10 @@ public class ActorTransform : MonoBehaviour {
 
         public bool IsCloseToGround() {
             return Mathf.Abs(transform.position.y - targetHeight) < 0.001f;
+        }
+
+        public bool IsUnderGround() {
+            return transform.position.y < targetHeight;
         }
 
         public void MeasureHeight() {
