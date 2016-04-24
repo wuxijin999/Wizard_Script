@@ -5,43 +5,51 @@ namespace Fight {
 
     public class FloatStateProcessor : BodyStateProcessor {
 
-        Transform transform;
+        ActorTransform actorTransform;
         FloatData floatData;
 
         float startY;
         float targetY;
-        bool isRise = false;
         float startTime = 0f;
         float riseTimer = 0f;
-
+        FloatStage stage;
 
         public void Begin(FloatData _floatData) {
-            isRise = true;
             startTime = Time.time;
-            riseTimer = 0f;
-            startY = transform.position.y;
+            riseTimer = _floatData.RiseTime;
+            startY = actorTransform.transform.position.y;
             targetY = startY + _floatData.Height;
+
+            stage = FloatStage.Rise;
+            actorTransform.HeightSyncable = false;
         }
 
         public override void DoAction() {
             base.DoAction();
 
-            if (isRise) {
-                float y = Mathf.Lerp(startY, targetY, Mathf.Clamp01((Time.time - startTime) / riseTimer));
-                transform.position = new Vector3(transform.position.x, y, transform.position.z);
-                if (transform.position.y > targetY) {
-                    isRise = false;
-                }
+            switch (stage) {
+                case FloatStage.None:
+                    break;
+                case FloatStage.Rise:
+                    float y = Mathf.Lerp(startY, targetY, Mathf.Clamp01((Time.time - startTime) / riseTimer));
+                    actorTransform.transform.position = actorTransform.transform.position.SetY(y);
+                    if (actorTransform.transform.position.y > targetY) {
+                        stage = FloatStage.Fall;
+                    }
+                    break;
+                case FloatStage.Fall:
+
+                    break;
             }
 
-            float groundY = 0f;
-            if (!isRise) {
-
-            }
 
         }
 
-
+        public enum FloatStage {
+            None,
+            Rise,
+            Fall,
+        }
     }
 }
 

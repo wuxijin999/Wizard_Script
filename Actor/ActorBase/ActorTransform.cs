@@ -5,7 +5,16 @@ public class ActorTransform : MonoBehaviour {
 
     CharacterController controller;
     GroundHeightUpdateProcessor heightSynchronizer;
+
+    public bool HeightSyncable {
+        get; set;
+    }
+    public bool IsCloseToGround() {
+        return this.heightSynchronizer.IsCloseToGround();
+    }
+
     protected virtual void Awake() {
+        HeightSyncable = true;
         controller = this.GetComponent<CharacterController>();
         heightSynchronizer = new GroundHeightUpdateProcessor(this.transform, controller.height * 0.5f);
     }
@@ -23,8 +32,10 @@ public class ActorTransform : MonoBehaviour {
     }
 
     protected virtual void LateUpdate() {
-        heightSynchronizer.MeasureHeight();
-        heightSynchronizer.UpdateHeight();
+        if (HeightSyncable) {
+            heightSynchronizer.MeasureHeight();
+            heightSynchronizer.UpdateHeight();
+        }
     }
 
     protected virtual void OnDisable() {
@@ -49,6 +60,10 @@ public class ActorTransform : MonoBehaviour {
             offset = _offset;
         }
 
+        public bool IsCloseToGround() {
+            return Mathf.Abs(transform.position.y - targetHeight) < 0.001f;
+        }
+
         public void MeasureHeight() {
             Ray ray = new Ray(this.transform.position.AddY(30), Vector3.down);
             RaycastHit hit;
@@ -59,7 +74,7 @@ public class ActorTransform : MonoBehaviour {
         }
 
         public void UpdateHeight() {
-            if (Mathf.Abs(transform.position.y - targetHeight) < 0.001f) {
+            if (IsCloseToGround()) {
                 return;
             }
 
