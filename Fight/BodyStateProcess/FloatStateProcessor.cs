@@ -48,6 +48,8 @@ namespace Fight {
                     if (actorTransform.IsUnderGround()) {
                         stage = FloatStage.None;
                         actorTransform.HeightSyncable = true;
+
+                        End();
                     }
                     break;
             }
