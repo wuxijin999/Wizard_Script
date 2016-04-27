@@ -12,7 +12,7 @@ using DG.Tweening;
 [RequireComponent(typeof(RectTransform))]
 public class InfiniteScrollRect : InfiniteRect, IBeginDragHandler, IDragHandler, IEndDragHandler {
 
-    public delegate void ScrollHandler();
+    public delegate void ScrollHandler(InfiniteItem _item);
     public event ScrollHandler CrossTopEvent;
     public event ScrollHandler CrossBottomEvent;
 
@@ -186,15 +186,15 @@ public class InfiniteScrollRect : InfiniteRect, IBeginDragHandler, IDragHandler,
         for (int i = 0; i < infiniteItemArray.Length; i++) {
             min = infiniteItemArray[i].parent.TransformPoint(new Vector3(0, infiniteItemArray[i].offsetMin.y, 0));
             if (min.y > offsetMax.y) {
+                if (CrossTopEvent != null) {
+                    CrossTopEvent(infiniteItemArray[i]);
+                }
                 offsetBottomWorld = infiniteItemArray[i].parent.TransformPoint(offsetBottomLocal
                     - new Vector3(0, infiniteItemArray[i].rect.height * (1f - infiniteItemArray[i].pivot.y), 0));
                 offsetBottomLocal = offsetBottomLocal - new Vector3(0, infiniteItemArray[i].rect.height, 0);
                 infiniteItemArray[i].rectTransform.position = offsetBottomWorld;
                 infiniteItemArray[i].rectTransform.SetAsLastSibling();
                 infiniteItemArray[i].DoFirstToLast();
-                if (CrossTopEvent != null) {
-                    CrossTopEvent();
-                }
             }
             else {
                 break;
@@ -220,15 +220,15 @@ public class InfiniteScrollRect : InfiniteRect, IBeginDragHandler, IDragHandler,
         for (int i = infiniteItemArray.Length - 1; i >= 0; i--) {
             max = infiniteItemArray[i].parent.TransformPoint(new Vector3(0, infiniteItemArray[i].offsetMax.y, 0));
             if (max.y < offsetMin.y) {
+                if (CrossBottomEvent != null) {
+                    CrossBottomEvent(infiniteItemArray[i]);
+                }
                 offsetTopWorld = infiniteItemArray[i].parent.TransformPoint(offsetTopLocal
                     + new Vector3(0, infiniteItemArray[i].rect.height * infiniteItemArray[i].pivot.y, 0));
                 offsetTopLocal = offsetTopLocal + new Vector3(0, infiniteItemArray[i].rect.height, 0);
                 infiniteItemArray[i].rectTransform.position = offsetTopWorld;
                 infiniteItemArray[i].rectTransform.SetAsFirstSibling();
                 infiniteItemArray[i].DoLastToFirst();
-                if (CrossBottomEvent != null) {
-                    CrossBottomEvent();
-                }
             }
             else {
                 break;
