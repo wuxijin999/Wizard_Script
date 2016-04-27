@@ -18,4 +18,13 @@ public class CameraTool {
     }
 
 
+    public static Vector3 ScreenToUIPosition(Vector3 _screenPosition) {
+        Vector3 UIPos = Vector3.zero;
+        Vector3 temp = Camera.main.ScreenToViewportPoint(_screenPosition);
+        UIPos = CameraManager.UI2DCamera.ViewportToWorldPoint(temp);
+        UIPos.z = 0;
+        return UIPos;
+
+    }
+
 }
