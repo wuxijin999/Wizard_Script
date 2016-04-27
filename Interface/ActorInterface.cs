@@ -19,7 +19,7 @@ namespace Fight {
         void StopFollow();
     }
 
-    public enum FightPropertyType {
+    public enum FightAttribute {
         Hp,
         MaxHp,
         Attack,
@@ -28,12 +28,7 @@ namespace Fight {
         AttackSpeed,
 
     }
-    public interface IProperty {
 
-        int QueryProperty(FightPropertyType propertyType);
-        void IncreaseProperty(FightPropertyType propertyType, int value);
-        void DecreaseProperty(FightPropertyType propertyType, int value);
-    }
 
     public interface IAttack {
 
@@ -46,6 +41,13 @@ namespace Fight {
 
         void DealHurt();
 
+    }
+
+    public interface IAttribute {
+        void Set(FightAttribute _type, int _value);
+        void Add(FightAttribute _type, int _value);
+        void Reduce(FightAttribute _type, int _value);
+        int Query(FightAttribute _type);
     }
 
 }
