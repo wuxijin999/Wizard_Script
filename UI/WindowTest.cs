@@ -22,7 +22,6 @@ public class WindowTest : MonoBehaviour {
     }
 
     public void BindController() {
-        buttonList.Clear();
         clickHandler.Clear();
 
         SeekChildComponent(this.transform);
