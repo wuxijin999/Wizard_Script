@@ -7,13 +7,8 @@ namespace UI {
 
     public abstract class ModelBase {
 
-        public void Init() {
-
-        }
-
-        protected void OnReconnected() {
-
-        }
+        public abstract void Init();
+        protected abstract void OnReconnected();
 
     }
 

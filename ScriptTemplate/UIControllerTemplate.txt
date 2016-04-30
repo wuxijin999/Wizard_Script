@@ -1,0 +1,36 @@
+﻿﻿//-----------------------------------------------------------------
+//         [Author]: Leonard.Wu 
+//         [Date]: #DateTime#  
+//-----------------------------------------------------------------
+
+using UnityEngine;
+using System;
+using System.Collections;
+
+namespace UI {
+
+public class #SCRIPTNAME# : WindowBizBase {
+
+    #region Member
+
+    #endregion
+
+	public #SCRIPTNAME#(){
+	
+	}
+
+    #region Interaction
+    #endregion
+
+    #region CallBack
+    #endregion
+
+    #region Functional Method
+    #endregion
+}
+
+}
+
+
+
+

@@ -1,13 +1,16 @@
-﻿//-----------------------------------------------------------------
+﻿﻿//-----------------------------------------------------------------
 //         [Author]: Leonard.Wu 
 //         [Date]: #DateTime#  
 //-----------------------------------------------------------------
 
 using UnityEngine;
 using UnityEngine.UI;
+using System;
 using System.Collections;
 
-public class WindowViewTemplate : WindowViewBase {
+namespace UI {
+
+public class #SCRIPTNAME# : WindowViewBase {
 
     #region Member
 
@@ -46,3 +49,9 @@ public class WindowViewTemplate : WindowViewBase {
     #region Functional Method
     #endregion
 }
+
+}
+
+
+
+

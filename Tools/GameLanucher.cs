@@ -1,8 +1,8 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UI;
 
 public class GameLanucher : MonoBehaviour {
-
 
     private void Start() {
 

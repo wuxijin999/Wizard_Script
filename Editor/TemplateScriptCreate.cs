@@ -7,13 +7,41 @@ using UnityEditor.ProjectWindowCallback;
 using System.Text.RegularExpressions;
 
 public class UITemplateScript {
-    [MenuItem("Assets/Create/C# Window Script/View Script", false, 80)]
-    public static void CreatNewWindowScript() {
+
+    [MenuItem("Assets/Create/C# Custom Script/NewMonobehavior Script", false, 0)]
+    public static void CreatNewMonoScript() {
         ProjectWindowUtil.StartNameEditingIfProjectWindowExists(0,
         ScriptableObject.CreateInstance<MyDoCreateScriptAsset>(),
-        GetSelectedPathOrFallback() + "/NewWindowScript.cs",
+        GetSelectedPathOrFallback() + "/NewMonobehaviorScript.cs",
         null,
-       "Assets/Wizard_Script/UI/ScriptTemplate/WindowViewTemplate.cs");
+       "Assets/Wizard_Script/ScriptTemplate/NewMonobehaviorScriptTemplate.txt");
+    }
+
+    [MenuItem("Assets/Create/C# Custom Script/UI View Script", false, 1)]
+    public static void CreatUIViewScript() {
+        ProjectWindowUtil.StartNameEditingIfProjectWindowExists(0,
+        ScriptableObject.CreateInstance<MyDoCreateScriptAsset>(),
+        GetSelectedPathOrFallback() + "/NewUIViewScript.cs",
+        null,
+       "Assets/Wizard_Script/ScriptTemplate/UIViewTemplate.txt");
+    }
+
+    [MenuItem("Assets/Create/C# Custom Script/UI Controller Script", false, 2)]
+    public static void CreatUIControllerScript() {
+        ProjectWindowUtil.StartNameEditingIfProjectWindowExists(0,
+        ScriptableObject.CreateInstance<MyDoCreateScriptAsset>(),
+        GetSelectedPathOrFallback() + "/NewUIControllerScript.cs",
+        null,
+       "Assets/Wizard_Script/ScriptTemplate/UIControllerTemplate.txt");
+    }
+
+    [MenuItem("Assets/Create/C# Custom Script/UI Model Script", false, 3)]
+    public static void CreatUIModelScript() {
+        ProjectWindowUtil.StartNameEditingIfProjectWindowExists(0,
+        ScriptableObject.CreateInstance<MyDoCreateScriptAsset>(),
+        GetSelectedPathOrFallback() + "/NewUIModelScript.cs",
+        null,
+       "Assets/Wizard_Script/ScriptTemplate/UIModelTemplate.txt");
     }
 
     public static string GetSelectedPathOrFallback() {
@@ -43,21 +71,9 @@ class MyDoCreateScriptAsset : EndNameEditAction {
         string text = streamReader.ReadToEnd();
         streamReader.Close();
         string fileNameWithoutExtension = Path.GetFileNameWithoutExtension(pathName);
-        text = Regex.Replace(text, "WindowViewTemplate", fileNameWithoutExtension);
+        text = Regex.Replace(text, "#SCRIPTNAME#", fileNameWithoutExtension);
         text = Regex.Replace(text, "#DateTime#", System.DateTime.Now.ToLongDateString());
 
-        //string text2 = Regex.Replace(fileNameWithoutExtension, " ", string.Empty);
-        //text = Regex.Replace(text, "#SCRIPTNAME#", text2);
-        //if (char.IsUpper(text2, 0))
-        //{
-        //    text2 = char.ToLower(text2[0]) + text2.Substring(1);
-        //    text = Regex.Replace(text, "#SCRIPTNAME_LOWER#", text2);
-        //}
-        //else
-        //{
-        //    text2 = "my" + char.ToUpper(text2[0]) + text2.Substring(1);
-        //    text = Regex.Replace(text, "#SCRIPTNAME_LOWER#", text2);
-        //}
         bool encoderShouldEmitUTF8Identifier = true;
         bool throwOnInvalidBytes = false;
         UTF8Encoding encoding = new UTF8Encoding(encoderShouldEmitUTF8Identifier, throwOnInvalidBytes);

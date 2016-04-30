@@ -1,0 +1,30 @@
+﻿//--------------------------------------------------------
+//    [Author]:                   Wu Xijin
+//    [Date]   :           #DateTime#
+//--------------------------------------------------------
+using UnityEngine;
+using System.Collections;
+
+public class #SCRIPTNAME# : MonoBehaviour {
+
+    #region Fields
+    #endregion
+
+    #region Built-In
+    void Awake() {
+
+    }
+
+    void Start() {
+
+    }
+
+    void Update() {
+
+    }
+    #endregion
+
+}
+
+
+

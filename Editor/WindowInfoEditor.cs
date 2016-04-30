@@ -1,6 +1,6 @@
 ﻿using UnityEditor;
 using UnityEngine;
-
+using UI;
 
 [CustomEditor(typeof(WindowInfo))]
 public class WindowInfoEditor : Editor {

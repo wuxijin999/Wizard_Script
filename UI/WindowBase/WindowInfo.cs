@@ -1,34 +1,37 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class WindowInfo : MonoBehaviour {
+namespace UI {
 
-    public delegate void WinAnimationHandler();
-    public event WinAnimationHandler WinOpenCompleteEvent;
-    public event WinAnimationHandler WinCloseCompleteEvent;
+    public class WindowInfo : MonoBehaviour {
 
-    public WindowType Type;
-    public WinAnimType AnimType;
-    public WinOffsetAnimStyle OffsetStyle;
+        public delegate void WinAnimationHandler();
+        public event WinAnimationHandler WinOpenCompleteEvent;
+        public event WinAnimationHandler WinCloseCompleteEvent;
 
-    public bool ClickEmptyToClose = false;
-    public bool NeedMask = true;
-    public int MaskAlpha = 128;
+        public WindowType Type;
+        public WinAnimType AnimType;
+        public WinOffsetAnimStyle OffsetStyle;
 
-    private void OnOpenComplete() {
+        public bool ClickEmptyToClose = false;
+        public bool NeedMask = true;
+        public int MaskAlpha = 128;
 
-        if (WinOpenCompleteEvent != null) {
-            WinOpenCompleteEvent();
+        private void OnOpenComplete() {
+
+            if (WinOpenCompleteEvent != null) {
+                WinOpenCompleteEvent();
+            }
         }
-    }
 
+        private void OnCloseComplete() {
 
-    private void OnCloseComplete() {
-
-        if (WinCloseCompleteEvent != null) {
-            WinCloseCompleteEvent();
+            if (WinCloseCompleteEvent != null) {
+                WinCloseCompleteEvent();
+            }
         }
-    }
 
+    }
 
 }
+
