@@ -26,8 +26,7 @@ public class WindowTestEditorWindow : EditorWindow {
     }
 
 
-    public WindowTest testTool;
-
+    public  UITest testTool;
 
     public void OnGUI() {
 

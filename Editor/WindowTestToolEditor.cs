@@ -2,12 +2,12 @@
 using UnityEngine;
 
 
-[CustomEditor(typeof(WindowTest))]
+[CustomEditor(typeof(UITest))]
 public class WindowTestToolEditor : Editor {
 
     public override void OnInspectorGUI() {
 
-        WindowTest tool = (WindowTest)target;
+        UITest tool = (UITest)target;
 
         GUILayout.Space(20);
         GUILayout.BeginHorizontal();

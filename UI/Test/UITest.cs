@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using UnityEngine.EventSystems;
 using System;
 
-public class WindowTest : MonoBehaviour {
+public class UITest : MonoBehaviour {
 
     public Dictionary<int, Component> hashComponent = new Dictionary<int, Component>();
     public Dictionary<int, IPointerClickHandler> hashClick = new Dictionary<int, IPointerClickHandler>();
@@ -119,31 +119,34 @@ public class WindowTest : MonoBehaviour {
 
         for (int i = 0; i < _transform.childCount; i++) {
             transform = _transform.GetChild(i);
-            component = transform.GetComponent<IPointerClickHandler>() as Component;
             click = transform.GetComponent<IPointerClickHandler>();
             down = transform.GetComponent<IPointerDownHandler>();
             up = transform.GetComponent<IPointerUpHandler>();
             submit = transform.GetComponent<ISubmitHandler>();
 
             if (click != null) {
+                component = click as Component;
                 hashClick[click.GetHashCode()] = click;
                 clickTestTimes[click.GetHashCode()] = 0;
                 hashComponent[click.GetHashCode()] = component;
             }
 
             if (down != null) {
+                component = down as Component;
                 hashDown[down.GetHashCode()] = down;
                 downTestTimes[down.GetHashCode()] = 0;
                 hashComponent[down.GetHashCode()] = component;
             }
 
             if (up != null) {
+                component = up as Component;
                 hashUp[up.GetHashCode()] = up;
                 upTestTimes[up.GetHashCode()] = 0;
                 hashComponent[up.GetHashCode()] = component;
             }
 
             if (submit != null) {
+                component = submit as Component;
                 hashSubmit[submit.GetHashCode()] = submit;
                 submitTestTimes[submit.GetHashCode()] = 0;
                 hashComponent[submit.GetHashCode()] = component;

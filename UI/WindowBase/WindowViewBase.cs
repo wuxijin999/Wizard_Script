@@ -14,7 +14,7 @@ public class WindowViewBase {
     public void Open(WindowBizBase _biz = null) {
         if (winGo == null) {
             LoadResource();
-            InitGUI();
+            BindController();
         }
         winBiz = _biz;
         OnPreOpen();
@@ -34,7 +34,7 @@ public class WindowViewBase {
         }
     }
 
-    protected virtual void InitGUI() {
+    protected virtual void BindController() {
         info = winGo.GetComponent<WindowInfo>();
         animator = winGo.GetComponent<Animator>();
     }
@@ -69,12 +69,6 @@ public class WindowViewBase {
 
     }
 
-    protected virtual void PlayOpenAnim() {
-        if (animator != null) {
-            animator.Play("Open");
-        }
-    }
-
     protected virtual void OnAfterOpen() {
 
     }
@@ -83,13 +77,6 @@ public class WindowViewBase {
 
     }
 
-    protected virtual void PlayCloseAnim() {
-        if (animator != null) {
-            animator.Play("Close");
-        }
-    }
-
-
     protected virtual void OnAfterClose() {
         info.WinOpenCompleteEvent -= OnOpenComplete;
         info.WinCloseCompleteEvent -= OnCloseComplete;
@@ -97,6 +84,17 @@ public class WindowViewBase {
 
     }
 
+    private void PlayOpenAnim() {
+        if (animator != null) {
+            animator.Play("Open");
+        }
+    }
+
+    private void PlayCloseAnim() {
+        if (animator != null) {
+            animator.Play("Close");
+        }
+    }
     private void OnOpenComplete() {
         OnAfterOpen();
     }
@@ -104,8 +102,6 @@ public class WindowViewBase {
     private void OnCloseComplete() {
         OnAfterClose();
     }
-
-
 
     private void LoadResource() {
 
