@@ -7,7 +7,7 @@ using UnityEditor.ProjectWindowCallback;
 using System.Text.RegularExpressions;
 
 public class UITemplateScript {
-    [MenuItem("Assets/Create/Window Script", false, 80)]
+    [MenuItem("Assets/Create/C# Window Script/View Script", false, 80)]
     public static void CreatNewWindowScript() {
         ProjectWindowUtil.StartNameEditingIfProjectWindowExists(0,
         ScriptableObject.CreateInstance<MyDoCreateScriptAsset>(),
@@ -44,7 +44,7 @@ class MyDoCreateScriptAsset : EndNameEditAction {
         streamReader.Close();
         string fileNameWithoutExtension = Path.GetFileNameWithoutExtension(pathName);
         text = Regex.Replace(text, "WindowViewTemplate", fileNameWithoutExtension);
-        text = Regex.Replace(text, "#DateTime#",System.DateTime.Now.ToShortDateString());
+        text = Regex.Replace(text, "#DateTime#", System.DateTime.Now.ToLongDateString());
 
         //string text2 = Regex.Replace(fileNameWithoutExtension, " ", string.Empty);
         //text = Regex.Replace(text, "#SCRIPTNAME#", text2);

@@ -29,7 +29,9 @@ public class WindowTestEditorWindow : EditorWindow {
     public  UITest testTool;
 
     public void OnGUI() {
-
+        if (testTool==null) {
+            return;
+        }
         GUILayout.Space(40);
         if (testTool.auto) {
             GUILayout.BeginHorizontal();
