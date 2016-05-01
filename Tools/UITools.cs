@@ -27,7 +27,7 @@ public class UITools {
         GameObject.DontDestroyOnLoad(tempGo);
         tempGo.name = "UIRoot";
         UIRoot = tempGo.transform;
-        RootWindow = UIRoot.Find("RootWindow");
+        RootWindow = UIRoot.Find("WindowCanvas");
 
         GameObject go = null;
         go = new GameObject(NORMAL_LAYER_NAME);

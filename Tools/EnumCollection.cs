@@ -42,3 +42,10 @@ public enum EnemyCategory {
     Boss=2,
 
 }
+
+public enum SceneType {
+    Launch,
+    Login,
+    Main,
+    Fight,
+}
