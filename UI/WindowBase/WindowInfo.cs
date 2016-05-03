@@ -1,4 +1,8 @@
-﻿using UnityEngine;
+﻿//------------------------------------------------------------------
+//                              [Author]:Wu Xijin
+//
+//--------------------------------------------------------------------
+using UnityEngine;
 using System.Collections;
 
 namespace UI {
