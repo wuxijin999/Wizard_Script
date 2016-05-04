@@ -1,16 +1,2 @@
-﻿public void DoSomeThing(Action<bool> _callBack){
-}
-private void DoSomeThingCallBack(bool _isOk){
-if(_isOk){
- }else{
- }
- }
-
-public void DoSomeThingAgain(Action<bool> _callBack){
-}
-private void DoSomeThingAgainCallBack(bool _isOk){
-if(_isOk){
- }else{
- }
- }
-
+﻿Dosomething
+dosomethingagain

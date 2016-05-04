@@ -3,6 +3,7 @@
 //    [Date]   :           Monday, May 02, 2016
 //--------------------------------------------------------
 using UnityEngine;
+using UnityEditor.ProjectWindowCallback;
 using UnityEditor;
 using System.Collections;
 using System.Collections.Generic;
@@ -11,17 +12,46 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System;
 
-public class MVCCodeGenerator : MonoBehaviour {
+public class MVCCodeGenerator {
 
-    public const string relativeFilePath = @"Assets/Wizard_Script/ScriptTemplate/";
+    public const string relativeFilePath = @"Assets/Wizard_Script/ScriptTemplate/model.txt";
 
-    public string fileName;
+    [MenuItem("Assets/Create/MVCCodeGenerator", false, 3)]
+    public static void CreatMVCCodeScript() {
+        ProjectWindowUtil.StartNameEditingIfProjectWindowExists(0,
+        ScriptableObject.CreateInstance<DoCreateMVCScript>(),
+        GetSelectedPathOrFallback() + "/NewMVC.cs",
+        null,
+       relativeFilePath);
+    }
 
-    public void CodeBuilder() {
+    public static string GetSelectedPathOrFallback() {
+        string path = "Assets";
+        foreach (UnityEngine.Object obj in Selection.GetFiltered(typeof(UnityEngine.Object), SelectionMode.Assets)) {
+            path = AssetDatabase.GetAssetPath(obj);
+            if (!string.IsNullOrEmpty(path) && File.Exists(path)) {
+                path = Path.GetDirectoryName(path);
+                break;
+            }
+        }
+        return path;
+    }
 
-        string path = relativeFilePath + fileName + ".txt";
-        string fullPath = Path.GetFullPath(path);
-        StreamReader sr = new StreamReader(fullPath);
+
+
+}
+
+
+class DoCreateMVCScript : EndNameEditAction {
+
+    public override void Action(int instanceId, string pathName, string resourceFile) {
+        UnityEngine.Object o = CreateScriptAssetFromTemplate(pathName, resourceFile);
+        ProjectWindowUtil.ShowCreatedAsset(o);
+    }
+
+    internal static UnityEngine.Object CreateScriptAssetFromTemplate(string pathName, string resourceFile) {
+        string fullPath = Path.GetFullPath(pathName);
+        StreamReader sr = new StreamReader(resourceFile);
         StringBuilder textStr = new StringBuilder();
 
         List<string> allLine = new List<string>();
@@ -33,6 +63,12 @@ public class MVCCodeGenerator : MonoBehaviour {
         }
 
         sr.Close();
+
+        string fileNameWithoutExtension = Path.GetFileNameWithoutExtension(pathName);
+
+        textStr.Append(UsingNameSpaceGenerator());
+        textStr.Append("\n");
+        textStr.Append(ClassNameGenetor(fileNameWithoutExtension));
 
         textStr.Append("#region Action\n");
         for (int i = 0; i < allLine.Count; i++) {
@@ -49,6 +85,8 @@ public class MVCCodeGenerator : MonoBehaviour {
         }
         textStr.Append("#endregion");
 
+        textStr.Append("\n}");
+
         bool encoderShouldEmitUTF8Identifier = true;
         bool throwOnInvalidBytes = false;
         UTF8Encoding encoding = new UTF8Encoding(encoderShouldEmitUTF8Identifier, throwOnInvalidBytes);
@@ -56,12 +94,30 @@ public class MVCCodeGenerator : MonoBehaviour {
         StreamWriter streamWriter = new StreamWriter(fullPath, append, encoding);
         streamWriter.Write(textStr);
         streamWriter.Close();
-        AssetDatabase.ImportAsset(path);
-
+        AssetDatabase.ImportAsset(pathName);
+        return AssetDatabase.LoadAssetAtPath(pathName, typeof(UnityEngine.Object));
     }
 
 
-    private string FiledGenerator(string _fieldName) {
+    private static string UsingNameSpaceGenerator() {
+        StringBuilder sb = new StringBuilder();
+        sb.Append("using System;\n");
+        sb.Append("using System.Collections;\n");
+        sb.Append("using UnityEngine;\n");
+        return sb.ToString();
+    }
+
+    private static string ClassNameGenetor(string _className) {
+        StringBuilder sb = new StringBuilder();
+        sb.Append("public class ");
+        sb.Append(_className);
+        sb.Append(" {\n");
+
+        return sb.ToString();
+
+    }
+
+    private static string FiledGenerator(string _fieldName) {
         StringBuilder sb = new StringBuilder();
 
         sb.Append(string.Format("private "));
@@ -69,7 +125,7 @@ public class MVCCodeGenerator : MonoBehaviour {
         return sb.ToString();
     }
 
-    private string MethodGenerator(string _methodName) {
+    private static string MethodGenerator(string _methodName) {
         StringBuilder sb = new StringBuilder();
         sb.Append("public void ");
         sb.Append(_methodName);
@@ -78,7 +134,7 @@ public class MVCCodeGenerator : MonoBehaviour {
         return sb.ToString();
     }
 
-    private string CallBackGenerator(string _methodName) {
+    private static string CallBackGenerator(string _methodName) {
         StringBuilder sb = new StringBuilder();
 
         sb.Append("private void ");
@@ -88,14 +144,6 @@ public class MVCCodeGenerator : MonoBehaviour {
         return sb.ToString();
     }
 
-
-    public void Update() {
-        if (Input.GetKeyDown(KeyCode.F)) {
-            CodeBuilder();
-        }
-    }
-
 }
-
 
 
