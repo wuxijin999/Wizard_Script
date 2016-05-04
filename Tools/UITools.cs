@@ -45,6 +45,9 @@ public class UITools {
         go = new GameObject(SYSTEM_LAYER_NAME);
         SYSTEMLAYER = go.AddComponent<RectTransform>();
         MatchingParent(UITools.RootWindow as RectTransform, SYSTEMLAYER as RectTransform);
+
+        GameObject stick = AssetLoadTools.Load_UI("GameStick");
+        MatchingParent(UITools.RootWindow as RectTransform, stick.transform as RectTransform);
     }
 
     static public void MatchingParent(RectTransform _parent, RectTransform _child) {
