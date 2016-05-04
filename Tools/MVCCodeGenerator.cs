@@ -70,6 +70,11 @@ class DoCreateMVCScript : EndNameEditAction {
         textStr.Append("\n");
         textStr.Append(ClassNameGenetor(fileNameWithoutExtension));
 
+        for (int i = 0; i < allLine.Count; i++) {
+            textStr.AppendLine(DelegateGenerator(allLine[i]));
+            textStr.Append("\n");
+        }
+
         textStr.Append("#region Action\n");
         for (int i = 0; i < allLine.Count; i++) {
             textStr.AppendLine(MethodGenerator(allLine[i]));
@@ -125,12 +130,22 @@ class DoCreateMVCScript : EndNameEditAction {
         return sb.ToString();
     }
 
+    private static string DelegateGenerator(string _methodName) {
+        StringBuilder sb = new StringBuilder();
+        sb.Append("Action<bool>  ");
+        sb.Append(_methodName);
+        sb.Append("CallBack=null;");
+
+        return sb.ToString();
+    }
     private static string MethodGenerator(string _methodName) {
         StringBuilder sb = new StringBuilder();
         sb.Append("public void ");
         sb.Append(_methodName);
-        sb.Append("(Action<bool> _callBack){\n\n}");
-
+        sb.Append("(Action<bool> _callBack){\n");
+        sb.Append(_methodName);
+        sb.Append("CallBack=_callBack;\n");
+        sb.Append(" \n}");
         return sb.ToString();
     }
 
@@ -138,8 +153,17 @@ class DoCreateMVCScript : EndNameEditAction {
         StringBuilder sb = new StringBuilder();
 
         sb.Append("private void ");
+        sb.Append("On");
         sb.Append(_methodName);
-        sb.Append("CallBack(bool _isOk){\nif(_isOk){\n}else\n{\n}\n}");
+        sb.Append("CallBack(bool _isOk){\nif(_isOk){\n}else\n{\n}");
+        sb.Append("if(");
+        sb.Append(_methodName);
+        sb.Append("CallBack");
+        sb.Append("!=null){\n");
+        sb.Append(_methodName);
+        sb.Append("CallBack");
+        sb.Append("(_isOk);\n}");
+        sb.Append("\n}");
 
         return sb.ToString();
     }
