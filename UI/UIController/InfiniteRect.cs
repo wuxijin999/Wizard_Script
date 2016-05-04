@@ -102,17 +102,6 @@ public class InfiniteRect : MonoBehaviour {
         }
     }
 
-
-    [SerializeField]
-    private InfiniteScrollRect m_ScrollRect;
-    public InfiniteScrollRect scrollRect {
-        get {
-            return m_ScrollRect;
-        }
-        set {
-            m_ScrollRect = value;
-        }
-    }
     public Vector2 center {
         get {
             return rectTransform.offsetMax - new Vector2(rectTransform.rect.width * 0.5f, rectTransform.rect.height * 0.5f);

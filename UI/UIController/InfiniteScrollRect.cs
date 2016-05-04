@@ -29,23 +29,31 @@ public class InfiniteScrollRect : InfiniteRect, IBeginDragHandler, IDragHandler,
     MoveState state;
 
     [SerializeField]
-    private float contentUpBorder = 0f;
-    protected float ContentUpBorder {
+    [Range(0, 1)]
+    private float normalizeHeight = 0f;
+    public float NormalizeHeight {
+        get { return normalizeHeight; }
+        set { normalizeHeight = value; }
+    }
+
+    [SerializeField]
+    private float upBorder = 0f;
+    protected float UpBorder {
         get {
-            return contentUpBorder;
+            return upBorder;
         }
         set {
-            contentUpBorder = value;
+            upBorder = value;
         }
     }
     [SerializeField]
-    private float contentDownBorder = 0f;
-    protected float ContentDownBorder {
+    private float downBorder = 0f;
+    protected float DownBorder {
         get {
-            return contentDownBorder;
+            return downBorder;
         }
         set {
-            contentDownBorder = value;
+            downBorder = value;
         }
     }
 
@@ -55,15 +63,18 @@ public class InfiniteScrollRect : InfiniteRect, IBeginDragHandler, IDragHandler,
             return;
         }
         state = MoveState.Normal;
-        lastMousePos = mousePos = mCamera.ScreenToWorldPoint(Input.mousePosition);
+        Vector3 p = mCamera.ScreenToWorldPoint(Input.mousePosition);
+        lastMousePos = mousePos = this.transform.InverseTransformPoint(p);
     }
 
     public void OnDrag(PointerEventData eventData) {
         if (state == MoveState.Springback) {
             return;
         }
-        mousePos = mCamera.ScreenToWorldPoint(Input.mousePosition);
-        offsetY = mousePos.y - lastMousePos.y;
+        Vector3 p = mCamera.ScreenToWorldPoint(Input.mousePosition);
+        mousePos = this.transform.InverseTransformPoint(p);
+        float y = mousePos.y - lastMousePos.y;
+        normalizeHeight = Mathf.Clamp01(normalizeHeight + y / (upBorder - downBorder));
         lastMousePos = mousePos;
     }
 
@@ -71,16 +82,16 @@ public class InfiniteScrollRect : InfiniteRect, IBeginDragHandler, IDragHandler,
         if (state == MoveState.Springback) {
             return;
         }
-        if (content.localPosition.y > (contentUpBorder + 0.5f)) {
+        if (content.localPosition.y > (upBorder + 0.5f)) {
             state = MoveState.Springback;
-            content.DOLocalMoveY(contentUpBorder, 0.5f).SetEase(Ease.OutBack).OnComplete(() => {
+            content.DOLocalMoveY(upBorder, 0.5f).SetEase(Ease.OutBack).OnComplete(() => {
                 state = MoveState.Normal;
             });
 
         }
-        else if (content.localPosition.y < (contentDownBorder - 0.5f)) {
+        else if (content.localPosition.y < (downBorder - 0.5f)) {
             state = MoveState.Springback;
-            content.DOLocalMoveY(contentDownBorder, 0.5f).SetEase(Ease.OutBack).OnComplete(() => {
+            content.DOLocalMoveY(downBorder, 0.5f).SetEase(Ease.OutBack).OnComplete(() => {
                 state = MoveState.Normal;
             });
         }
@@ -123,8 +134,9 @@ public class InfiniteScrollRect : InfiniteRect, IBeginDragHandler, IDragHandler,
             infiniteItemArray[i].Init();
         }
         InfiniteItem.preIndex = InfiniteItem.index - infiniteItemArray.Length;
-        contentDownBorder = content.transform.localPosition.y;
-        contentUpBorder = contentDownBorder + 16000f;
+        downBorder = content.transform.localPosition.y;
+        upBorder = downBorder + 16000f;
+
     }
 
     private void Update() {
@@ -135,7 +147,7 @@ public class InfiniteScrollRect : InfiniteRect, IBeginDragHandler, IDragHandler,
                     state = MoveState.Normal;
                 }
                 else {
-                    offsetY = velocity * 0.01f * Time.deltaTime;
+                    normalizeHeight = Mathf.Clamp01(normalizeHeight + velocity * Time.deltaTime / (upBorder - downBorder));
                 }
                 break;
         }
@@ -143,32 +155,34 @@ public class InfiniteScrollRect : InfiniteRect, IBeginDragHandler, IDragHandler,
     }
 
     void LateUpdate() {
-        if (Mathf.Abs(offsetY) < 0.001f) {
+        float ty = normalizeHeight * (upBorder - downBorder) + downBorder;
+        float d = ty - content.localPosition.y;
+        if (Mathf.Abs(d) < 0.1f) {
             return;
         }
-        content.position += new Vector3(0, offsetY, 0);
+
+        content.localPosition = content.localPosition.SetY(ty);
         switch (state) {
             case MoveState.Normal:
                 break;
             case MoveState.SlowDown:
-                float newY = Mathf.Clamp(content.localPosition.y, contentDownBorder, contentUpBorder);
+                float newY = Mathf.Clamp(content.localPosition.y, downBorder, upBorder);
                 content.localPosition = new Vector3(content.localPosition.x, newY, content.localPosition.z);
                 break;
             case MoveState.Springback:
                 break;
         }
 
-        if (offsetY > 0f) {
-            if (content.localPosition.y < contentUpBorder) {
+        if (d > 0f) {
+            if (content.localPosition.y < upBorder) {
                 ProcessCrossTopBorder();
             }
         }
         else {
-            if (content.localPosition.y > contentDownBorder) {
+            if (content.localPosition.y > downBorder) {
                 ProcessCrossBottomBorder();
             }
         }
-        offsetY = 0f;
     }
 
     /// <summary>

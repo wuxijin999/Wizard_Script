@@ -9,6 +9,17 @@ public class InfiniteItem : InfiniteRect {
     public static int preIndex = 0;
     public Text txtContent;
 
+    [SerializeField]
+    private InfiniteScrollRect m_ScrollRect;
+    public InfiniteScrollRect scrollRect {
+        get {
+            return m_ScrollRect;
+        }
+        set {
+            m_ScrollRect = value;
+        }
+    }
+
     protected virtual void Start() {
 
     }
