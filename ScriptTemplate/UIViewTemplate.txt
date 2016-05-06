@@ -10,7 +10,7 @@ using System.Collections;
 
 namespace UI {
 
-public class #SCRIPTNAME# : WindowViewBase {
+public class #ClassName# : WindowViewBase {
 
     #region Member
 

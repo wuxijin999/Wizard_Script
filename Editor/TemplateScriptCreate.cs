@@ -71,7 +71,7 @@ class MyDoCreateScriptAsset : EndNameEditAction {
         string text = streamReader.ReadToEnd();
         streamReader.Close();
         string fileNameWithoutExtension = Path.GetFileNameWithoutExtension(pathName);
-        text = Regex.Replace(text, "#SCRIPTNAME#", fileNameWithoutExtension);
+        text = Regex.Replace(text, "#Class.*#", fileNameWithoutExtension);
         text = Regex.Replace(text, "#DateTime#", System.DateTime.Now.ToLongDateString());
 
         bool encoderShouldEmitUTF8Identifier = true;

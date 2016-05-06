@@ -9,7 +9,7 @@ using System.Collections;
 
 namespace UI {
 
-public class #SCRIPTNAME# : WindowBizBase {
+public class #ClassName# : WindowBizBase {
 
     #region Member
 
