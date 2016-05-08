@@ -16,12 +16,24 @@ public class InfiniteItem : InfiniteRect {
             return m_ScrollRect;
         }
         set {
+            if (m_ScrollRect != null) {
+                m_ScrollRect.CrossTopEvent -= DoFirstToLast;
+                m_ScrollRect.CrossBottomEvent -= DoLastToFirst;
+            }
             m_ScrollRect = value;
+
+            if (m_ScrollRect != null) {
+                m_ScrollRect.CrossTopEvent += DoFirstToLast;
+                m_ScrollRect.CrossBottomEvent += DoLastToFirst;
+            }
         }
     }
 
     protected virtual void Start() {
-
+        if (m_ScrollRect != null) {
+            m_ScrollRect.CrossTopEvent += DoFirstToLast;
+            m_ScrollRect.CrossBottomEvent += DoLastToFirst;
+        }
     }
 
     public virtual void Init() {
@@ -29,13 +41,19 @@ public class InfiniteItem : InfiniteRect {
         txtContent.text = index.ToString();
     }
 
-    public virtual void DoFirstToLast() {
+    public virtual void DoFirstToLast(InfiniteItem _item) {
+        if (_item != this) {
+            return;
+        }
         index++;
         preIndex++;
         txtContent.text = index.ToString();
     }
 
-    public virtual void DoLastToFirst() {
+    public virtual void DoLastToFirst(InfiniteItem _item) {
+        if (_item != this) {
+            return;
+        }
         txtContent.text = preIndex.ToString();
         index--;
         preIndex--;

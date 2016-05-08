@@ -208,7 +208,6 @@ public class InfiniteScrollRect : InfiniteRect, IBeginDragHandler, IDragHandler,
                 offsetBottomLocal = offsetBottomLocal - new Vector3(0, infiniteItemArray[i].rect.height, 0);
                 infiniteItemArray[i].rectTransform.position = offsetBottomWorld;
                 infiniteItemArray[i].rectTransform.SetAsLastSibling();
-                infiniteItemArray[i].DoFirstToLast();
             }
             else {
                 break;
@@ -242,7 +241,6 @@ public class InfiniteScrollRect : InfiniteRect, IBeginDragHandler, IDragHandler,
                 offsetTopLocal = offsetTopLocal + new Vector3(0, infiniteItemArray[i].rect.height, 0);
                 infiniteItemArray[i].rectTransform.position = offsetTopWorld;
                 infiniteItemArray[i].rectTransform.SetAsFirstSibling();
-                infiniteItemArray[i].DoLastToFirst();
             }
             else {
                 break;
