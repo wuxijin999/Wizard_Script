@@ -44,6 +44,16 @@ public class UITemplateScript {
        "Assets/Wizard_Script/ScriptTemplate/UIModelTemplate.txt");
     }
 
+    [MenuItem("Assets/Create/C# Custom Script/Shader", false, 4)]
+    public static void CreatShader() {
+        ProjectWindowUtil.StartNameEditingIfProjectWindowExists(0,
+        ScriptableObject.CreateInstance<MyDoCreateScriptAsset>(),
+        GetSelectedPathOrFallback() + "/NewShader.shader",
+        null,
+       "Assets/Shader/Teamplate/ShaderTeamplate.txt");
+    }
+
+
     public static string GetSelectedPathOrFallback() {
         string path = "Assets";
         foreach (UnityEngine.Object obj in Selection.GetFiltered(typeof(UnityEngine.Object), SelectionMode.Assets)) {
