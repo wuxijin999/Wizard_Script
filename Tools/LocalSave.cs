@@ -3,9 +3,8 @@
 //    [Date]   :           Sunday, May 08, 2016
 //--------------------------------------------------------
 using UnityEngine;
-using System.Collections;
-using System.Collections.Generic;
 using System.Text;
+
 public static class LocalSave {
 
 
@@ -37,11 +36,34 @@ public static class LocalSave {
         return PlayerPrefs.GetString(key);
     }
 
+    public static void SetVector3(string key, Vector3 value) {
+
+        StringBuilder sb = new StringBuilder();
+        sb.Append(value.x);
+        sb.Append(";");
+        sb.Append(value.y);
+        sb.Append(";");
+        sb.Append(value.z);
+
+        PlayerPrefs.SetString(key, sb.ToString());
+
+    }
+
+    public static Vector3 GetVector3(string key) {
+        Vector3 v;
+        string[] strArray = PlayerPrefs.GetString(key).Split(';');
+        v.x = float.Parse(strArray[0]);
+        v.y = float.Parse(strArray[2]);
+        v.z = float.Parse(strArray[4]);
+
+        return v;
+    }
+
     public static void SetIntArray(string key, int[] value) {
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < value.Length; i++) {
             sb.Append(value[i]);
-            sb.Append(";");
+            sb.Append(';');
         }
 
         sb.Remove(sb.Length - 1, 1);
@@ -53,7 +75,7 @@ public static class LocalSave {
         int[] intArray = null;
         string value = PlayerPrefs.GetString(key);
 
-        string[] strArray = value.Split(";");
+        string[] strArray = value.Split(';');
         intArray = new int[strArray.Length];
         for (int i = 0; i < strArray.Length; i++) {
             intArray[i] = int.Parse(strArray[i]);
@@ -78,7 +100,7 @@ public static class LocalSave {
         float[] array = null;
         string value = PlayerPrefs.GetString(key);
 
-        string[] strArray = value.Split(";");
+        string[] strArray = value.Split(';');
         array = new float[strArray.Length];
         for (int i = 0; i < strArray.Length; i++) {
             array[i] = float.Parse(strArray[i]);
@@ -101,7 +123,7 @@ public static class LocalSave {
 
     public static string[] GeStringArray(string key) {
         string value = PlayerPrefs.GetString(key);
-        return value.Split(";");
+        return value.Split(';');
     }
 }
 
