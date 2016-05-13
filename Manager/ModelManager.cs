@@ -16,7 +16,6 @@ namespace UI {
 
         List<ModelBase> modelSet = null;
 
-
         public void Init() {
             modelSet = new List<ModelBase>();
 
@@ -33,8 +32,6 @@ namespace UI {
 
             return model;
         }
-
-
 
     }
 
