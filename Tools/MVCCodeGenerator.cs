@@ -20,9 +20,10 @@ public class MVCCodeGenerator {
     public static void CreatMVCCodeScript() {
         ProjectWindowUtil.StartNameEditingIfProjectWindowExists(0,
         ScriptableObject.CreateInstance<DoCreateMVCScript>(),
-        GetSelectedPathOrFallback() + "/NewMVC.cs",
+        GetSelectedPathOrFallback() + "/NewView.cs",
         null,
        relativeFilePath);
+
     }
 
     public static string GetSelectedPathOrFallback() {
@@ -37,10 +38,7 @@ public class MVCCodeGenerator {
         return path;
     }
 
-
-
 }
-
 
 class DoCreateMVCScript : EndNameEditAction {
 
