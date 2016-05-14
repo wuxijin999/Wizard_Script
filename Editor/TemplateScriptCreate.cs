@@ -44,7 +44,16 @@ public class UITemplateScript {
        "Assets/Wizard_Script/ScriptTemplate/UIModelTemplate.txt");
     }
 
-    [MenuItem("Assets/Create/C# Custom Script/Shader", false, 4)]
+    [MenuItem("Assets/Create/C# Custom Script/RefData",false,4)]
+    public static void CreatRefData () {
+        ProjectWindowUtil.StartNameEditingIfProjectWindowExists(0,
+        ScriptableObject.CreateInstance<MyDoCreateScriptAsset>(),
+        GetSelectedPathOrFallback() + "/NewRefData.cs",
+        null,
+       "Assets/Wizard_Script/ScriptTemplate/RefDataTemplate.txt");
+    }
+
+    [MenuItem("Assets/Create/C# Custom Script/Shader", false, 5)]
     public static void CreatShader() {
         ProjectWindowUtil.StartNameEditingIfProjectWindowExists(0,
         ScriptableObject.CreateInstance<MyDoCreateScriptAsset>(),
