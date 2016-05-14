@@ -10,6 +10,10 @@ public class RefDataManager : Singleton<RefDataManager> {
     public Dictionary<int, RefSkill> skill {
         get; private set;
     }
+
+    public Dictionary<int, RefHitData> hitData {
+        get;private set;
+    }
     #endregion
 
 
@@ -17,6 +21,7 @@ public class RefDataManager : Singleton<RefDataManager> {
         base.Init();
 
         skill = ParseRefData<RefSkill>("skill");
+        hitData = ParseRefData<RefHitData>("hitdata");
     }
 
     public override void UnInit () {
