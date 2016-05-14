@@ -1,0 +1,28 @@
+﻿//--------------------------------------------------------
+//    [Author]:                   Wu Xijin
+//    [Date]   :			 #DateTime#
+//--------------------------------------------------------
+
+using System.Collections;
+
+public class #ClassName# : RefDataBase {
+
+    public int Id {
+        get; private set;
+    }
+
+    static public #ClassName# Get (int _id) {
+        #ClassName# r = null;
+
+      //  if (!RefDataManager.Instance.#Dictionary#.TryGetValue(_id, out r)) {
+			   WDebug.Log(string.Format("Failed to get #ClassName# data by id:<color=yellow>{0}</color> ", _id));
+      // }
+
+        return r;
+    }
+
+
+}
+
+
+
