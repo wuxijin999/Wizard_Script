@@ -2,7 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 
-public class Singleton<T> where T : class,new() {
+public class Singleton<T> where T : class, new() {
 
     private static T instance = null;
 
@@ -13,6 +13,14 @@ public class Singleton<T> where T : class,new() {
             }
             return instance;
         }
+    }
+
+    public virtual void Init () {
+
+    }
+
+    public virtual void UnInit () {
+
     }
 
 }
