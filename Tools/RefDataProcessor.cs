@@ -31,7 +31,7 @@ public class RefDataProcessor {
         sr.Close();
 
         T t = new T();
-        FieldInfo[] titlefieldList = t.GetType().GetFields();
+        PropertyInfo[] titlefieldList = t.GetType().GetProperties();
         int[] indexSet = new int[titlefieldList.Length];
 
         string[] fieldName = contentLine[1].Split('\t');
@@ -43,47 +43,47 @@ public class RefDataProcessor {
         for (int m = 2; m < contentLine.Count; m++) {
             fieldName = contentLine[m].Split('\t');
             T t1 = new T();
-            FieldInfo[] fieldList = t1.GetType().GetFields();
+            PropertyInfo[] fieldList = t1.GetType().GetProperties();
 
             for (int n = 0; n < fieldList.Length; n++) {
-                FieldInfo field = fieldList[indexSet[n]];
+                PropertyInfo field = fieldList[indexSet[n]];
                 string content = fieldName[n];
-                if (field.FieldType == typeof(int)) {
-                    field.SetValue(t1, int.Parse(content));
+                if (field.PropertyType == typeof(int)) {
+                    field.SetValue(t1, int.Parse(content), null);
                 }
-                else if (field.FieldType == typeof(string)) {
-                    field.SetValue(t1, content);
+                else if (field.PropertyType == typeof(string)) {
+                    field.SetValue(t1, content, null);
                 }
-                else if (field.FieldType == typeof(Enum)) {
-                    field.SetValue(t1, Enum.Parse(field.FieldType, content));
+                else if (field.PropertyType == typeof(Enum)) {
+                    field.SetValue(t1, Enum.Parse(field.PropertyType, content), null);
                 }
-                else if (field.FieldType == typeof(bool)) {
-                    field.SetValue(t1, bool.Parse(content));
+                else if (field.PropertyType == typeof(bool)) {
+                    field.SetValue(t1, bool.Parse(content), null);
                 }
-                else if (field.FieldType == typeof(float)) {
-                    field.SetValue(t1, float.Parse(content));
+                else if (field.PropertyType == typeof(float)) {
+                    field.SetValue(t1, float.Parse(content), null);
                 }
-                else if (field.FieldType == typeof(int[])) {
+                else if (field.PropertyType == typeof(int[])) {
                     string[] str = content.Split(';');
-                    field.SetValue(t1, ParseIntArray(str));
+                    field.SetValue(t1, ParseIntArray(str), null);
                 }
-                else if (field.FieldType == typeof(bool[])) {
+                else if (field.PropertyType == typeof(bool[])) {
                     string[] str = content.Split(';');
-                    field.SetValue(t1, ParseBoolArray(str));
+                    field.SetValue(t1, ParseBoolArray(str), null);
                 }
-                else if (field.FieldType == typeof(float[])) {
+                else if (field.PropertyType == typeof(float[])) {
                     string[] str = content.Split(';');
-                    field.SetValue(t1, ParseFloatArray(str));
+                    field.SetValue(t1, ParseFloatArray(str), null);
                 }
-                else if (field.FieldType == typeof(Enum[])) {
-                    Type type = field.FieldType.GetType();
+                else if (field.PropertyType == typeof(Enum[])) {
+                    Type type = field.PropertyType.GetType();
                     string[] str = content.Split(';');
-                    field.SetValue(t1, ParseEnumArray(type, str));
+                    field.SetValue(t1, ParseEnumArray(type, str), null);
                 }
 
             }
 
-            int key = (int)fieldList[0].GetValue(t1);
+            int key = (int)fieldList[0].GetValue(t1, null);
             dict.Add(key, t1);
         }
 
