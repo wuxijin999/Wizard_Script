@@ -4,10 +4,52 @@
 //--------------------------------------------------------
 
 using System.Collections;
+using UnityEngine;
+using Fight;
 
 public class RefHitData : RefDataBase {
 
     public int Id {
+        get; private set;
+    }
+
+    public AttackMode AttackMode {
+        get; private set;
+    }
+
+    public int AttackRange {
+        get; private set;
+    }
+
+    public TargetMode TargetMode {
+        get; private set;
+    }
+
+    public int TargetNum {
+        get; private set;
+    }
+
+    public Faction TargetFaction {
+        get; private set;
+    }
+
+    public DamageType DamageType {
+        get; private set;
+    }
+
+    public int DamageRate {
+        get; private set;
+    }
+
+    public Vector3[] DecisionCenter {
+        get; private set;
+    }
+
+    public float[] DecisionRadius {
+        get; private set;
+    }
+
+    public int Speed {
         get; private set;
     }
 
