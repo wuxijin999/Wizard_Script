@@ -60,6 +60,11 @@ public class RefDataProcessor {
                 else if (field.PropertyType == typeof(bool)) {
                     field.SetValue(t1, bool.Parse(content), null);
                 }
+                else if (field.PropertyType == typeof(Vector3)) {
+                    string[] strArray = content.Split(',');
+                    Vector3 v3 = new Vector3(float.Parse(strArray[0]), float.Parse(strArray[1]), float.Parse(strArray[2]));
+                    field.SetValue(t1, v3, null);
+                }
                 else if (field.PropertyType == typeof(float)) {
                     field.SetValue(t1, float.Parse(content), null);
                 }
@@ -79,6 +84,10 @@ public class RefDataProcessor {
                     Type type = field.PropertyType.GetType();
                     string[] str = content.Split(';');
                     field.SetValue(t1, ParseEnumArray(type, str), null);
+                }
+                else if (field.PropertyType == typeof(Vector3[])) {
+                    string[] str = content.Split(';');
+                    field.SetValue(t1, ParseVector3Array(str), null);
                 }
 
             }
@@ -126,6 +135,18 @@ public class RefDataProcessor {
 
         for (int i = 0; i < _content.Length; i++) {
             array[i] = Enum.Parse(euemType, _content[i]) as Enum;
+        }
+
+        return array;
+    }
+
+    public static Vector3[] ParseVector3Array (string[] _content) {
+        Vector3[] array = new Vector3[_content.Length];
+
+        string[] strArray = null;
+        for (int i = 0; i < _content.Length; i++) {
+            strArray = _content[i].Split(',');
+            array[i] = new Vector3(float.Parse(strArray[0]), float.Parse(strArray[1]), float.Parse(strArray[2]));
         }
 
         return array;
