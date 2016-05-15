@@ -14,7 +14,6 @@ public class RefDataLoadTest : MonoBehaviour {
         Debug.Log(
              hitData.Id + "\r\n" +
              hitData.AttackMode + "\r\n"
-            + hitData.AttackRange + "\r\n"
             + hitData.TargetMode + "\r\n"
             + hitData.TargetNum + "\r\n"
             + hitData.TargetFaction + "\r\n"
