@@ -5,25 +5,22 @@ using System.Collections.Generic;
 namespace Fight {
 
     public class HitDataPool {
+        Dictionary<int, Queue<HitData>> hitDataDict = null;
 
-        Dictionary<int, HitData> hitDataDict = null;
-
-        public HitDataPool() {
-            hitDataDict = new Dictionary<int, HitData>();
+        public HitDataPool () {
+            hitDataDict = new Dictionary<int, Queue<HitData>>();
         }
 
-        public HitData QueryHitData(int _hitId) {
+        public HitData GetHitData (int _hitId) {
             HitData hitData = null;
-            if (hitDataDict.TryGetValue(_hitId, out hitData)) {
-                return hitData;
-            }
-            else {
-                //从本地加载一个
-                hitData = new HitData();
-                hitDataDict[_hitId] = hitData;
-                return hitData;
+            Queue<HitData> hitDataQueue = null;
+            if (hitDataDict.TryGetValue(_hitId, out hitDataQueue)) {
+                if (hitDataQueue.Count > 0) {
+                    hitData = hitDataQueue.Dequeue();
+                }
             }
 
+            return hitData ?? new HitData(RefHitData.Get(_hitId));
         }
     }
 

@@ -17,10 +17,6 @@ public class RefHitData : RefDataBase {
         get; private set;
     }
 
-    public int AttackRange {
-        get; private set;
-    }
-
     public TargetMode TargetMode {
         get; private set;
     }

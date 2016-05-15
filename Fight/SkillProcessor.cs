@@ -20,6 +20,8 @@ namespace Fight {
         /// </summary>
         public void AttackDecision(int _hitId) {
             HitData hitData = BattleManager.Instance.QueryHitData(_hitId);
+            //带上施法者的信息
+            
             Vector3 center;
             float radius = 0f;
 

@@ -10,14 +10,22 @@ namespace Fight {
 
     public class HitData {
 
+        public int SkillId {
+            get; set;
+        }
+
+        public int CasterId {
+            get; set;
+        }
+
         public readonly int hitId;
         public readonly DecisionSphere[] decisionSpheres;
-
         public readonly FloatData floatData;
 
-        public HitData() {
+        public HitData ( RefHitData _refHitData) {
 
         }
+
     }
 
     public struct DecisionSphere {

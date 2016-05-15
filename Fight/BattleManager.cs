@@ -7,7 +7,7 @@ namespace Fight {
         static int BattleRound = 0;
         static int ActorInstanceId = 10000;
 
-        public delegate void ActorHandler(Actor _actor);
+        public delegate void ActorHandler (Actor _actor);
         public event ActorHandler HeroActorGenerateEvent;
         public event ActorHandler EnemyActorGenerateEvent;
         public event ActorHandler EnemyActorDeadEvent;
@@ -20,20 +20,21 @@ namespace Fight {
         HitDataPool hitDataPool;
 
 
-        public void Init() {
+        public override void Init () {
             BattleRound++;
             skillManager = new SkillManager();
+            hitDataPool = new HitDataPool();
             fActorModule = new FriendlyActorModule();
             hActorModule = new HostileActorModule();
             nActorModule = new NeutralActorModule();
         }
 
-        public int AllocateActorInstanceId() {
+        public int AllocateActorInstanceId () {
 
             return ActorInstanceId++;
         }
 
-        public int AllocateSkillInstanceId() {
+        public int AllocateSkillInstanceId () {
 
             return skillManager.AllocateSkillInstanceId();
         }
@@ -44,7 +45,7 @@ namespace Fight {
         /// <param name="_center"></param>
         /// <param name="_radius"></param>
         /// <returns></returns>
-        public List<MonsterActor> QueryEnemyActor(Vector2 _center, float _radius) {
+        public List<MonsterActor> QueryEnemyActor (Vector2 _center, float _radius) {
 
             List<MonsterActor> retList = new List<MonsterActor>();
             List<int> enemyInstIdList = hActorModule.EnemyInstIdList;
@@ -68,7 +69,7 @@ namespace Fight {
         /// </summary>
         /// <param name="_category">种类</param>
         /// <returns></returns>
-        public List<MonsterActor> QueryEnemyActor(EnemyCategory _category) {
+        public List<MonsterActor> QueryEnemyActor (EnemyCategory _category) {
 
             List<MonsterActor> retList = new List<MonsterActor>();
             List<int> enemyInstIdList = hActorModule.EnemyInstIdList;
@@ -89,7 +90,7 @@ namespace Fight {
         /// <param name="_minLevel"></param>
         /// <param name="_maxLevel"></param>
         /// <returns></returns>
-        public List<MonsterActor> QueryEnemyActor(int _minLevel, int _maxLevel) {
+        public List<MonsterActor> QueryEnemyActor (int _minLevel, int _maxLevel) {
 
             List<MonsterActor> retList = new List<MonsterActor>();
             List<int> enemyInstIdList = hActorModule.EnemyInstIdList;
@@ -104,12 +105,12 @@ namespace Fight {
             return retList;
         }
 
-        public HitData QueryHitData(int _hitId) {
+        public HitData QueryHitData (int _hitId) {
 
-            return hitDataPool.QueryHitData(_hitId);
+            return hitDataPool.GetHitData(_hitId);
         }
 
-        public void ProcessHitedActor(List<Actor> _actorList) {
+        public void ProcessHitedActor (List<Actor> _actorList) {
 
         }
         protected class FriendlyActorModule {
@@ -128,11 +129,11 @@ namespace Fight {
                 }
             }
 
-            public FriendlyActorModule() {
+            public FriendlyActorModule () {
 
             }
 
-            public void Creat(HeroActor _heroActor) {
+            public void Creat (HeroActor _heroActor) {
                 leader = _heroActor;
             }
 
@@ -154,15 +155,15 @@ namespace Fight {
                 }
             }
 
-            public HostileActorModule() {
+            public HostileActorModule () {
 
             }
 
-            public void GenerateEnemy() {
+            public void GenerateEnemy () {
 
             }
 
-            public void KillEnemy() {
+            public void KillEnemy () {
 
             }
 
