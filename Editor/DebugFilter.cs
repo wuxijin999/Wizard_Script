@@ -18,8 +18,10 @@ public class DebugFilter {
         string text = streamReader.ReadToEnd();
         streamReader.Close();
 
-        string pattern = @"Debug.log(.*);";
-        text = Regex.Replace(text, pattern, "");
+        string pattern01 = @"(?=Debug.Log(.*);)";
+        string pattern02 = @"(?<=Debug.Log(.*);)";
+        text = Regex.Replace(text, pattern01, "#if W_DEBUG\r\n");
+        text = Regex.Replace(text,pattern02,"\r\n#endif");
 
         bool encoderShouldEmitUTF8Identifier = true;
         bool throwOnInvalidBytes = false;
