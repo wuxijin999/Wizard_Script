@@ -11,7 +11,7 @@ using System.IO;
 
 public class DebugFilter {
 
-    [MenuItem("Tools/Debug/Clear", false, 5)]
+    [MenuItem("Tools/Debug/Add Macro", false, 5)]
     public static void DeleteAllDebug () {
         string fullPath = Path.GetFullPath("Assets/Wizard_Script/Test/modeltest.txt");
         StreamReader streamReader = new StreamReader("Assets/Wizard_Script/Test/modeltest.txt");
@@ -33,6 +33,25 @@ public class DebugFilter {
         AssetDatabase.ImportAsset("Assets/Wizard_Script/Test/modeltest.txt");
     }
 
+    [MenuItem("Tools/Debug/Clear", false, 4)]
+    public static void ClearDebug () {
+        string fullPath = Path.GetFullPath("Assets/Wizard_Script/Test/modeltest.txt");
+        StreamReader streamReader = new StreamReader("Assets/Wizard_Script/Test/modeltest.txt");
+        string text = streamReader.ReadToEnd();
+        streamReader.Close();
+
+        string pattern = @"Debug.Log(.*)";
+        text = Regex.Replace(text, pattern, "");
+
+        bool encoderShouldEmitUTF8Identifier = true;
+        bool throwOnInvalidBytes = false;
+        UTF8Encoding encoding = new UTF8Encoding(encoderShouldEmitUTF8Identifier, throwOnInvalidBytes);
+        bool append = false;
+        StreamWriter streamWriter = new StreamWriter(fullPath, append, encoding);
+        streamWriter.Write(text);
+        streamWriter.Close();
+        AssetDatabase.ImportAsset("Assets/Wizard_Script/Test/modeltest.txt");
+    }
 }
 
 
