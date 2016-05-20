@@ -19,7 +19,7 @@ public class FSMState {
     FSMStateMachine machine;
 
     public FSMSateStatus Status {
-        get; private set;
+        get; protected set;
     }
     public FSMState (FSMStateMachine _machine) {
         machine = _machine;

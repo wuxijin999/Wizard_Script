@@ -1,0 +1,36 @@
+﻿//---//--------------------------------------------------------
+//    [Author]:                   Wu Xijin
+//    [Date]   :           #DateTime#
+//--------------------------------------------------------
+using UnityEngine;
+using System.Collections;
+
+public class #ClasssName# : FSMState {
+
+    public #ClasssName# (FSMStateMachine _machine) :
+        base(_machine) {
+
+    }
+
+    public override void Enter () {
+        base.Enter();
+
+    }
+
+    public override void Excute () {
+        base.Excute();
+
+    }
+
+    public override void Exit () {
+        base.Exit();
+    }
+
+}
+
+
+
+
+
+
+

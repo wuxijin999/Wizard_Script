@@ -4,6 +4,7 @@
 //--------------------------------------------------------
 using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class FSMStateMachine {
 
@@ -13,11 +14,6 @@ public class FSMStateMachine {
 
     public FSMStateMachine () {
 
-    }
-
-    public FSMState CreateState () {
-        FSMState state = new FSMState(this);
-        return state;
     }
 
     public void SetDefaultState (FSMState _defaultState) {
@@ -40,6 +36,7 @@ public class FSMStateMachine {
             }
             else {
                 currentState = defaultState;
+                currentState.Enter();
             }
         }
     }
