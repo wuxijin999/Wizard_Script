@@ -7,9 +7,9 @@ namespace UI {
 
     public class WindowBizBase {
 
-        ModelBase model = null;
-        public WindowBizBase (ModelBase _model) {
-            model = _model;
+        protected ModelBase model = null;
+        public WindowBizBase () {
+
         }
     }
 

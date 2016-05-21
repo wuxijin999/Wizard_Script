@@ -94,8 +94,8 @@ namespace UI {
         }
         private void LoadResource () {
 
-            string temp = this.GetType().FullName;
-            string prefabName = "Win_" + temp.Substring(0, temp.Length - 3);
+            string temp = this.GetType().Name;
+            string prefabName = StringUtil.StringBuild("Win_", temp.Substring(0, temp.Length - 3));
             winGo = GameObject.Instantiate(AssetLoadTools.Load_UI(prefabName)) as GameObject;
             winGo.name = temp;
         }

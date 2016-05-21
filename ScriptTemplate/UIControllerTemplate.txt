@@ -15,7 +15,7 @@ public class #ClassName# : WindowBizBase {
 
     #endregion
 
-	public #SCRIPTNAME#(){
+	public #ClassName#(){
 	
 	}
 
