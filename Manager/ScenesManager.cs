@@ -9,7 +9,7 @@ using System.Collections;
 
 public class ScenesManager : SingletonMonobehavior<ScenesManager> {
 
-    public delegate void ProgressHandler(float _percent);
+    public delegate void ProgressHandler (float _percent);
     public event ProgressHandler ProgressEvent;
 
     #region Fields
@@ -26,18 +26,22 @@ public class ScenesManager : SingletonMonobehavior<ScenesManager> {
 
     private SceneType lastType;
     public SceneType LastType {
-        get { return lastType; }
+        get {
+            return lastType;
+        }
     }
 
     private SceneType currentType;
     public SceneType CurrentType {
-        get { return currentType; }
+        get {
+            return currentType;
+        }
     }
 
     #endregion
 
 
-    public void LoadLevel(string _sceneName, SceneType _type, Action _beginCallBack, Action _endCallBack) {
+    public void LoadLevel (string _sceneName, SceneType _type, Action _beginCallBack, Action _endCallBack) {
 
         startTime = DateTime.Now;
 
@@ -50,13 +54,13 @@ public class ScenesManager : SingletonMonobehavior<ScenesManager> {
         }
 
         SceneManager.LoadSceneAsync("Empty", LoadSceneMode.Single);
-        Resources.UnloadUnusedAssets();
         System.GC.Collect();
+        Resources.UnloadUnusedAssets();
 
         StartCoroutine(Co_LoadScene(LoadSceneMode.Single, _endCallBack));
     }
 
-    public void LoadLevelAdditive(string _sceneName, SceneType _type, Action _beginCallBack, Action _endCallBack) {
+    public void LoadLevelAdditive (string _sceneName, SceneType _type, Action _beginCallBack, Action _endCallBack) {
 
         startTime = DateTime.Now;
 
@@ -71,8 +75,7 @@ public class ScenesManager : SingletonMonobehavior<ScenesManager> {
         StartCoroutine(Co_LoadScene(LoadSceneMode.Additive, _endCallBack));
     }
 
-
-    IEnumerator Co_LoadScene(LoadSceneMode _mode, Action _endCallBack) {
+    IEnumerator Co_LoadScene (LoadSceneMode _mode, Action _endCallBack) {
 
         Application.targetFrameRate = 1000;
 
@@ -93,8 +96,8 @@ public class ScenesManager : SingletonMonobehavior<ScenesManager> {
         }
 
         if (_mode == LoadSceneMode.Single) {
-            Resources.UnloadUnusedAssets();
             System.GC.Collect();
+            Resources.UnloadUnusedAssets();
         }
 
         if (_endCallBack != null) {
@@ -105,7 +108,7 @@ public class ScenesManager : SingletonMonobehavior<ScenesManager> {
         WDebug.Log(string.Format("Load {0} use<color=yellow> {1} </color>second", currentSceneName, (endTime - startTime).TotalSeconds));
     }
 
-    private void BroadcastProgress(int _progress) {
+    private void BroadcastProgress (int _progress) {
 
         WDebug.Log(string.Format("场景加载进度 ：{0}", _progress));
 

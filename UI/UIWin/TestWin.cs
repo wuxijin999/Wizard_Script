@@ -13,7 +13,7 @@ namespace UI {
     public class TestWin : WindowViewBase {
 
         #region Member
-
+        TestBiz biz = null;
         #endregion
 
         #region Built-in
@@ -23,8 +23,8 @@ namespace UI {
 
         protected override void OnPreOpen () {
             base.OnPreOpen();
-            if (winBiz == null) {
-                winBiz = new TestBiz();
+            if (biz == null) {
+                biz = new TestBiz();
             }
         }
 

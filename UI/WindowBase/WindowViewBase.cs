@@ -7,7 +7,6 @@ namespace UI {
         private WindowInfo info;
         private GameObject winGo;
         Animator animator = null;
-        protected WindowBizBase winBiz = null;
 
         public WindowViewBase () {
 
@@ -21,12 +20,10 @@ namespace UI {
             PlayOpenAnim();
         }
         public void Close () {
-            winBiz = null;
             OnPreClose();
             PlayCloseAnim();
         }
         public void DoDestroy () {
-            winBiz = null;
             if (winGo != null) {
                 GameObject.Destroy(winGo);
             }
