@@ -9,7 +9,7 @@ namespace UI {
         List<WindowViewBase> activedWin = new List<WindowViewBase>();
         List<WindowViewBase> unActivedWin = new List<WindowViewBase>();
 
-        public void Init() {
+        public override void Init () {
             UITools.CreatUIRoot();
         }
 
@@ -18,7 +18,7 @@ namespace UI {
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
-        public T Open<T>() where T : WindowViewBase, new() {
+        public T Open<T> () where T : WindowViewBase, new() {
             T win = new T();
 
             if (CheckOpen<T>()) {
@@ -42,40 +42,10 @@ namespace UI {
         }
 
         /// <summary>
-        /// 打开窗口
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="_biz">窗口依赖的逻辑</param>
-        /// <returns></returns>
-        public T Open<T>(WindowBizBase _biz) where T : WindowViewBase, new() {
-
-            T win = new T();
-
-            if (CheckOpen<T>()) {
-                return null;
-            }
-
-            for (int i = 0; i < unActivedWin.Count; i++) {
-                if (unActivedWin[i] is T) {
-                    win = unActivedWin[i] as T;
-                    win.Open(_biz);
-                    unActivedWin.Remove(win);
-                    activedWin.Add(win);
-                    break;
-                }
-            }
-
-            win.Open(_biz);
-            activedWin.Add(win);
-
-            return win;
-        }
-
-        /// <summary>
         /// 关闭窗口
         /// </summary>
         /// <typeparam name="T"></typeparam>
-        public void Close<T>() where T : WindowViewBase {
+        public void Close<T> () where T : WindowViewBase {
 
             T win = null;
 
@@ -101,7 +71,7 @@ namespace UI {
         /// 销毁窗口
         /// </summary>
         /// <typeparam name="T"></typeparam>
-        public void DestroyWin<T>() where T : WindowViewBase {
+        public void DestroyWin<T> () where T : WindowViewBase {
             T win = null;
 
             for (int i = 0; i < activedWin.Count; i++) {
@@ -128,7 +98,7 @@ namespace UI {
             win.DoDestroy();
         }
 
-        private bool CheckOpen<T>() where T : WindowViewBase {
+        private bool CheckOpen<T> () where T : WindowViewBase {
 
             for (int i = 0; i < activedWin.Count; i++) {
                 if (activedWin[i] is T) {

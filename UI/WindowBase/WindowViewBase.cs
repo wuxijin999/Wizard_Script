@@ -9,34 +9,33 @@ namespace UI {
         Animator animator = null;
         protected WindowBizBase winBiz = null;
 
-        public WindowViewBase() {
+        public WindowViewBase () {
 
         }
-        public void Open(WindowBizBase _biz = null) {
+        public void Open () {
             if (winGo == null) {
                 LoadResource();
                 BindController();
             }
-            winBiz = _biz;
             OnPreOpen();
             PlayOpenAnim();
         }
-        public void Close() {
+        public void Close () {
             winBiz = null;
             OnPreClose();
             PlayCloseAnim();
         }
-        public void DoDestroy() {
+        public void DoDestroy () {
             winBiz = null;
             if (winGo != null) {
                 GameObject.Destroy(winGo);
             }
         }
-        protected virtual void BindController() {
+        protected virtual void BindController () {
             info = winGo.GetComponent<WindowInfo>();
             animator = winGo.GetComponent<Animator>();
         }
-        protected virtual void OnPreOpen() {
+        protected virtual void OnPreOpen () {
 
             if (!winGo.activeInHierarchy) {
                 winGo.SetActive(true);
@@ -65,35 +64,35 @@ namespace UI {
             info.WinCloseCompleteEvent += OnCloseComplete;
 
         }
-        protected virtual void OnAfterOpen() {
+        protected virtual void OnAfterOpen () {
 
         }
-        protected virtual void OnPreClose() {
+        protected virtual void OnPreClose () {
 
         }
-        protected virtual void OnAfterClose() {
+        protected virtual void OnAfterClose () {
             info.WinOpenCompleteEvent -= OnOpenComplete;
             info.WinCloseCompleteEvent -= OnCloseComplete;
             winGo.SetActive(false);
 
         }
-        private void PlayOpenAnim() {
+        private void PlayOpenAnim () {
             if (animator != null) {
                 animator.Play("Open");
             }
         }
-        private void PlayCloseAnim() {
+        private void PlayCloseAnim () {
             if (animator != null) {
                 animator.Play("Close");
             }
         }
-        private void OnOpenComplete() {
+        private void OnOpenComplete () {
             OnAfterOpen();
         }
-        private void OnCloseComplete() {
+        private void OnCloseComplete () {
             OnAfterClose();
         }
-        private void LoadResource() {
+        private void LoadResource () {
 
             string temp = this.GetType().FullName;
             string prefabName = "Win_" + temp.Substring(0, temp.Length - 3);
