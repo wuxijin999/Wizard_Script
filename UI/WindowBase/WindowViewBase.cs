@@ -4,18 +4,20 @@ using System.Collections;
 namespace UI {
     public class WindowViewBase {
 
-        private WindowInfo info;
-        private GameObject winGo;
+        protected GameObject panel;
+        protected WindowInfo info;
         Animator animator = null;
 
         public WindowViewBase () {
 
         }
         public void Open () {
-            if (winGo == null) {
+            if (panel == null) {
                 LoadResource();
                 BindController();
+                AddListeners();
             }
+
             OnPreOpen();
             PlayOpenAnim();
         }
@@ -24,36 +26,42 @@ namespace UI {
             PlayCloseAnim();
         }
         public void DoDestroy () {
-            if (winGo != null) {
-                GameObject.Destroy(winGo);
+            if (panel != null) {
+                GameObject.Destroy(panel);
             }
         }
         protected virtual void BindController () {
-            info = winGo.GetComponent<WindowInfo>();
-            animator = winGo.GetComponent<Animator>();
-        }
-        protected virtual void OnPreOpen () {
+            info = panel.GetComponent<WindowInfo>();
+            info.IsRaycastValid = false;
 
-            if (!winGo.activeInHierarchy) {
-                winGo.SetActive(true);
+            animator = panel.GetComponent<Animator>();
+        }
+
+        protected virtual void AddListeners () {
+
+        }
+
+        protected virtual void OnPreOpen () {
+            if (!panel.activeInHierarchy) {
+                panel.SetActive(true);
             }
 
             switch (info.Type) {
                 case WindowType.Normal:
-                    winGo.transform.SetParent(UITools.NORMALLAYER);
-                    UITools.MatchingParent(UITools.NORMALLAYER as RectTransform, winGo.transform as RectTransform);
+                    panel.transform.SetParent(UITools.NORMALLAYER);
+                    UITools.MatchingParent(UITools.NORMALLAYER as RectTransform, panel.transform as RectTransform);
                     break;
                 case WindowType.Modal:
-                    winGo.transform.SetParent(UITools.MODALLAYER);
-                    UITools.MatchingParent(UITools.MODALLAYER as RectTransform, winGo.transform as RectTransform);
+                    panel.transform.SetParent(UITools.MODALLAYER);
+                    UITools.MatchingParent(UITools.MODALLAYER as RectTransform, panel.transform as RectTransform);
                     break;
                 case WindowType.Tip:
-                    winGo.transform.SetParent(UITools.TIPSLAYER);
-                    UITools.MatchingParent(UITools.TIPSLAYER as RectTransform, winGo.transform as RectTransform);
+                    panel.transform.SetParent(UITools.TIPSLAYER);
+                    UITools.MatchingParent(UITools.TIPSLAYER as RectTransform, panel.transform as RectTransform);
                     break;
                 case WindowType.System:
-                    winGo.transform.SetParent(UITools.SYSTEMLAYER);
-                    UITools.MatchingParent(UITools.SYSTEMLAYER as RectTransform, winGo.transform as RectTransform);
+                    panel.transform.SetParent(UITools.SYSTEMLAYER);
+                    UITools.MatchingParent(UITools.SYSTEMLAYER as RectTransform, panel.transform as RectTransform);
                     break;
             }
 
@@ -62,15 +70,15 @@ namespace UI {
 
         }
         protected virtual void OnAfterOpen () {
-
+            info.IsRaycastValid = true;
         }
         protected virtual void OnPreClose () {
-
+            info.IsRaycastValid = false;
         }
         protected virtual void OnAfterClose () {
             info.WinOpenCompleteEvent -= OnOpenComplete;
             info.WinCloseCompleteEvent -= OnCloseComplete;
-            winGo.SetActive(false);
+            panel.SetActive(false);
 
         }
         private void PlayOpenAnim () {
@@ -90,11 +98,10 @@ namespace UI {
             OnAfterClose();
         }
         private void LoadResource () {
-
             string temp = this.GetType().Name;
             string prefabName = StringUtil.StringBuild("Win_", temp.Substring(0, temp.Length - 3));
-            winGo = GameObject.Instantiate(AssetLoadTools.Load_UI(prefabName)) as GameObject;
-            winGo.name = temp;
+            panel = GameObject.Instantiate(AssetLoadTools.Load_UI(prefabName)) as GameObject;
+            panel.name = temp;
         }
     }
 

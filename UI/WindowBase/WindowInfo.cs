@@ -7,9 +7,9 @@ using System.Collections;
 
 namespace UI {
 
-    public class WindowInfo : MonoBehaviour {
+    public class WindowInfo : MonoBehaviour, ICanvasRaycastFilter {
 
-        public delegate void WinAnimationHandler();
+        public delegate void WinAnimationHandler ();
         public event WinAnimationHandler WinOpenCompleteEvent;
         public event WinAnimationHandler WinCloseCompleteEvent;
 
@@ -21,14 +21,22 @@ namespace UI {
         public bool NeedMask = true;
         public int MaskAlpha = 128;
 
-        private void OnOpenComplete() {
+        public bool IsRaycastValid {
+            get; set;
+        }
+
+        public bool IsRaycastLocationValid (Vector2 sp, Camera eventCamera) {
+            return IsRaycastValid;
+        }
+
+        private void OnOpenComplete () {
 
             if (WinOpenCompleteEvent != null) {
                 WinOpenCompleteEvent();
             }
         }
 
-        private void OnCloseComplete() {
+        private void OnCloseComplete () {
 
             if (WinCloseCompleteEvent != null) {
                 WinCloseCompleteEvent();

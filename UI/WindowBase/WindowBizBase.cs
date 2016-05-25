@@ -11,6 +11,11 @@ namespace UI {
         public WindowBizBase () {
 
         }
+
+        public virtual void Reset () {
+
+        }
+
     }
 
 }

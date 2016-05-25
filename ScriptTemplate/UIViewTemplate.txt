@@ -21,23 +21,15 @@ public class #ClassName# : WindowViewBase {
         base.BindController();
     }
 
+    protected override void AddListeners () {
+        base.AddListeners();
+     }
+
     protected override void OnPreOpen() {
         base.OnPreOpen();
 
     }
 
-    protected override void OnAfterOpen() {
-        base.OnAfterOpen();
-    }
-
-    protected override void OnPreClose() {
-        base.OnPreClose();
-    }
-
-    protected override void OnAfterClose() {
-        base.OnAfterClose();
-
-    }
     #endregion
 
     #region Interaction
