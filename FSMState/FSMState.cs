@@ -16,13 +16,11 @@ public enum FSMSateStatus {
 
 public class FSMState {
 
-    FSMStateMachine machine;
-
     public FSMSateStatus Status {
         get; protected set;
     }
-    public FSMState (FSMStateMachine _machine) {
-        machine = _machine;
+    public FSMState () {
+
     }
 
     public virtual void Enter () {

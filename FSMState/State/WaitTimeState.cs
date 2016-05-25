@@ -12,8 +12,7 @@ public class WaitTimeState : FSMState {
     }
 
     private float endTime;
-    public WaitTimeState (FSMStateMachine _machine) :
-        base(_machine) {
+    public WaitTimeState () {
 
     }
 
@@ -29,10 +28,15 @@ public class WaitTimeState : FSMState {
 
     }
 
+    float triggerTimer = 1f;
     public override void Excute () {
         base.Excute();
         if (Time.time < endTime) {
-            Debug.Log(string.Format("剩余：{0}秒", endTime - Time.time));
+            triggerTimer += Time.deltaTime;
+            if (triggerTimer > 1f) {
+                triggerTimer = 0;
+                Debug.Log(Time.time);
+            }
         }
         else {
             Status = FSMSateStatus.Success;

@@ -12,18 +12,49 @@ public class FSMStateMachine {
     FSMState nextState;
     FSMState defaultState;
 
-    public FSMStateMachine () {
+    Dictionary<int, FSMState> stateDict;
+    bool transformImmediately = false;
 
+    public FSMStateMachine () {
+        stateDict = new Dictionary<int, FSMState>();
     }
 
-    public void SetDefaultState (FSMState _defaultState) {
-        currentState = defaultState = _defaultState;
+    public void RegisterState (int _trigger, FSMState _state) {
+        stateDict[_trigger] = _state;
+    }
+
+    public void SetDefault (int _trigger) {
+        currentState = defaultState = stateDict[_trigger];
+    }
+
+    public void Begin () {
         currentState.Enter();
+    }
+
+    public void SetTrigger (int _trigger) {
+        if (!stateDict.ContainsKey(_trigger)) {
+            WDebug.Log(string.Format("{0} is not registered!", _trigger));
+            return;
+        }
+
+        nextState = stateDict[_trigger];
+    }
+
+    public void SetTriggerImmediately (int _trigger) {
+        transformImmediately = true;
+        nextState = stateDict[_trigger];
     }
 
     public void FSMUpdate () {
         if (currentState == null) {
             return;
+        }
+
+        if (transformImmediately) {
+            currentState.Exit();
+            currentState = nextState;
+            currentState.Enter();
+            transformImmediately = false;
         }
 
         currentState.Excute();
@@ -32,6 +63,7 @@ public class FSMStateMachine {
             currentState = null;
             if (nextState != null) {
                 currentState = nextState;
+                currentState.Enter();
                 nextState = null;
             }
             else {
