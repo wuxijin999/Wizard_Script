@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 
 
-namespace UI {
+namespace WizardSystem {
 
     public abstract class ModelBase {
 

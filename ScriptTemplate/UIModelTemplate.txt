@@ -3,12 +3,11 @@
 //         [Date]: #DateTime#  
 //-----------------------------------------------------------------
 
-using UnityEngine;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 
-namespace UI {
+namespace WizardSystem {
 
     public class #ClassName# : ModelBase {
 

@@ -6,6 +6,7 @@
 using UnityEngine;
 using System;
 using System.Collections;
+using WizardSystem;
 
 namespace UI {
 

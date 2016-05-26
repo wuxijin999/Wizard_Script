@@ -13,12 +13,22 @@ namespace UI {
     public class TestWin : WindowViewBase {
 
         #region Member
+        Button btnClick;
         TestBiz biz = null;
         #endregion
 
         #region Built-in
         protected override void BindController () {
             base.BindController();
+            btnClick = panel.GetComponentByPath<Button>("Image");
+        }
+
+        protected override void AddListeners () {
+            base.AddListeners();
+            btnClick.onClick.AddListener(() => {
+                WDebug.Log("fffff");
+            }
+            );
         }
 
         protected override void OnPreOpen () {
@@ -26,6 +36,10 @@ namespace UI {
             if (biz == null) {
                 biz = new TestBiz();
             }
+            else {
+                biz.Reset();
+            }
+
         }
 
         protected override void OnAfterOpen () {

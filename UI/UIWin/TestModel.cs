@@ -3,12 +3,11 @@
 //         [Date]: Saturday, May 21, 2016  
 //-----------------------------------------------------------------
 
-using UnityEngine;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using WizardSystem;
 
-namespace UI {
 
     public class TestModel : ModelBase {
 
@@ -26,7 +25,6 @@ namespace UI {
 
     }
 
-}
 
 
 
