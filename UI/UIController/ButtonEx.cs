@@ -2,29 +2,42 @@
 using System.Collections;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
+using System;
 
-public class ButtonEx : Button {
+public class ButtonEx : Button, ICanvasRaycastFilter {
 
-    public float ForbidDuration = 1f;
+    public float ForbidTime = 1f;
+    public ResponseType Response;
 
+    float interactableTime = 0f;
 
-    float forbidTimer = 0f;
-    public override void OnPointerClick(PointerEventData eventData) {
-        base.OnPointerClick(eventData);
-
-        forbidTimer = 1f;
-        interactable = false;
-    }
-
-
-    void Update() {
-        if (forbidTimer > 0) {
-            forbidTimer -= Time.deltaTime;
-            if (forbidTimer < 0f) {
-                interactable = true;
-            }
+    public bool IsRaycastLocationValid (Vector2 sp, Camera eventCamera) {
+        if (Response == ResponseType.Off || Response == ResponseType.Gray) {
+            return Time.time > interactableTime;
+        }
+        else {
+            return true;
         }
     }
 
+    public override void OnPointerClick (PointerEventData eventData) {
+        if (Response == ResponseType.Tip) {
+            Debug.Log("Disable！");
+            return;
+        }
+        base.OnPointerClick(eventData);
+        interactableTime = Time.time + ForbidTime;
+    }
 
+    protected override void Start () {
+        base.Start();
+        interactableTime = Time.time;
+    }
+
+    public enum ResponseType {
+        None,
+        Off,
+        Gray,
+        Tip,
+    }
 }
