@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using DG.Tweening;
 
 namespace UI {
     public class WindowViewBase {
@@ -21,6 +22,7 @@ namespace UI {
             OnPreOpen();
             PlayOpenAnim();
         }
+
         public void Close () {
             OnPreClose();
             PlayCloseAnim();
@@ -82,13 +84,60 @@ namespace UI {
 
         }
         private void PlayOpenAnim () {
-            if (animator != null) {
-                animator.Play("Open");
+            switch (info.AnimType) {
+                case WinAnimType.OffSet:
+                    switch (info.OffsetStyle) {
+                        case WinOffsetAnimStyle.L2R:
+                            panel.transform.localPosition = panel.transform.localPosition.SetX(-1920);
+                            panel.transform.DOLocalMoveX(0, 0.3f).SetEase(Ease.OutExpo).OnComplete(OnOpenComplete);
+                            break;
+                        case WinOffsetAnimStyle.R2L:
+                            panel.transform.localPosition = panel.transform.localPosition.SetX(1920);
+                            panel.transform.DOLocalMoveX(0, 0.3f).SetEase(Ease.OutExpo).OnComplete(OnOpenComplete);
+                            break;
+                        case WinOffsetAnimStyle.T2B:
+                            panel.transform.localPosition = panel.transform.localPosition.SetY(1080);
+                            panel.transform.DOLocalMoveY(0, 0.3f).SetEase(Ease.OutExpo).OnComplete(OnOpenComplete);
+                            break;
+                        case WinOffsetAnimStyle.B2T:
+                            panel.transform.localPosition = panel.transform.localPosition.SetY(-1080);
+                            panel.transform.DOLocalMoveY(0, 0.3f).SetEase(Ease.OutExpo).OnComplete(OnOpenComplete);
+                            break;
+                    }
+                    break;
+                case WinAnimType.Scale:
+                    panel.transform.localPosition = Vector3.zero;
+                    panel.transform.DOScale(1, 0.3f).SetEase(Ease.OutExpo).OnComplete(OnOpenComplete);
+                    break;
+                case WinAnimType.None:
+                    OnOpenComplete();
+                    break;
             }
         }
         private void PlayCloseAnim () {
-            if (animator != null) {
-                animator.Play("Close");
+            switch (info.AnimType) {
+                case WinAnimType.OffSet:
+                    switch (info.OffsetStyle) {
+                        case WinOffsetAnimStyle.L2R:
+                            panel.transform.DOLocalMoveX(-1920, 0.3f).SetEase(Ease.InExpo).OnComplete(OnCloseComplete);
+                            break;
+                        case WinOffsetAnimStyle.R2L:
+                            panel.transform.DOLocalMoveX(1920, 0.3f).SetEase(Ease.InExpo).OnComplete(OnCloseComplete);
+                            break;
+                        case WinOffsetAnimStyle.T2B:
+                            panel.transform.DOLocalMoveY(1080, 0.3f).SetEase(Ease.InExpo).OnComplete(OnCloseComplete);
+                            break;
+                        case WinOffsetAnimStyle.B2T:
+                            panel.transform.DOLocalMoveY(-1080, 0.3f).SetEase(Ease.InExpo).OnComplete(OnCloseComplete);
+                            break;
+                    }
+                    break;
+                case WinAnimType.Scale:
+                    panel.transform.DOScale(0, 0.3f).SetEase(Ease.InExpo).OnComplete(OnCloseComplete);
+                    break;
+                case WinAnimType.None:
+                    OnCloseComplete();
+                    break;
             }
         }
         private void OnOpenComplete () {
