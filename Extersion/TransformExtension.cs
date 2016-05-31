@@ -47,4 +47,24 @@ public static class TransformExtension {
 
     }
 
+    /// <summary>
+    /// 以锚四个角的方式进行匹配
+    /// 并且将对象设置为父对象
+    /// </summary>
+    /// <param name="_child"></param>
+    /// <param name="_parent"></param>
+    public static void MatchWhith (this RectTransform _child,RectTransform _parent) {
+
+        if (_child.parent != _parent) {
+            _child.SetParent(_parent);
+        }
+        _child.anchoredPosition3D = Vector3.zero;
+        _child.sizeDelta = Vector2.zero;
+        _child.anchorMin = Vector2.zero;
+        _child.anchorMax = Vector2.one;
+        _child.pivot = Vector2.one * 0.5f;
+        _child.localRotation = Quaternion.identity;
+        _child.localScale = Vector3.one;
+    }
+
 }
