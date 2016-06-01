@@ -1,18 +1,22 @@
 ﻿using UnityEngine;
 using System.Collections;
 using DG.Tweening;
+using System;
 
 namespace UI {
     public class WindowViewBase {
 
         protected GameObject panel;
         protected WindowInfo info;
+        Action openCallBack = null;
+        Action closeCallBack = null;
         Animator animator = null;
+        GameObject mask = null;
 
         public WindowViewBase () {
 
         }
-        public void Open () {
+        public WindowViewBase Open () {
             if (panel == null) {
                 LoadResource();
                 BindController();
@@ -21,17 +25,34 @@ namespace UI {
 
             OnPreOpen();
             PlayOpenAnim();
+
+            return this;
         }
 
-        public void Close () {
+        public WindowViewBase Close () {
             OnPreClose();
             PlayCloseAnim();
+
+            return this;
         }
+
         public void DoDestroy () {
             if (panel != null) {
                 GameObject.Destroy(panel);
             }
         }
+
+        public WindowViewBase OnOpenComplete (Action _callBack) {
+            openCallBack = _callBack;
+            return this;
+        }
+
+        public WindowViewBase OnCloseComplete (Action _callBack) {
+            closeCallBack = _callBack;
+            return this;
+        }
+
+
         protected virtual void BindController () {
             info = panel.GetComponent<WindowInfo>();
             info.IsRaycastValid = false;
@@ -72,16 +93,25 @@ namespace UI {
 
         }
         protected virtual void OnAfterOpen () {
+            if (openCallBack != null) {
+                openCallBack();
+                openCallBack = null;
+            }
+
             info.IsRaycastValid = true;
         }
         protected virtual void OnPreClose () {
             info.IsRaycastValid = false;
         }
         protected virtual void OnAfterClose () {
+            if (closeCallBack != null) {
+                closeCallBack();
+                closeCallBack = null;
+            }
+
             info.WinOpenCompleteEvent -= OnOpenComplete;
             info.WinCloseCompleteEvent -= OnCloseComplete;
             panel.SetActive(false);
-
         }
         private void PlayOpenAnim () {
             switch (info.AnimType) {
@@ -146,6 +176,7 @@ namespace UI {
         private void OnCloseComplete () {
             OnAfterClose();
         }
+
         private void LoadResource () {
             string temp = this.GetType().Name;
             string prefabName = StringUtil.StringBuild("Win_", temp.Substring(0, temp.Length - 3));
