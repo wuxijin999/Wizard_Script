@@ -45,7 +45,7 @@ namespace UI {
         /// 关闭窗口
         /// </summary>
         /// <typeparam name="T"></typeparam>
-        public void Close<T> () where T : WindowViewBase {
+        public T Close<T> () where T : WindowViewBase {
 
             T win = null;
 
@@ -58,13 +58,14 @@ namespace UI {
 
             if (win == null) {
                 Debug.Log(string.Format("该窗口已经关闭！"));
-                return;
+                return win;
             }
 
             activedWin.Remove(win);
             unActivedWin.Add(win);
             win.Close();
 
+            return win;
         }
 
         /// <summary>
