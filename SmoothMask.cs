@@ -27,7 +27,12 @@ public class SmoothMask : UIBehaviour, ICanvasRaycastFilter {
 
     [Tooltip("It's  necessary")]
     [SerializeField]
-    private Transform m_CanvasScale;
+    private CanvasScaler m_CanvasScale;
+    private CanvasScaler canvasScale {
+        get {
+            return m_CanvasScale ?? (m_CanvasScale = GetComponentInParent<CanvasScaler>());
+        }
+    }
 
     Vector2 leftBottom = Vector2.zero;
     Vector2 rightTop = Vector2.zero;
@@ -41,12 +46,9 @@ public class SmoothMask : UIBehaviour, ICanvasRaycastFilter {
     }
 
     private void SmoothMaskUpdate () {
-        if (m_CanvasScale == null) {
-            return;
-        }
 
-        leftBottom = m_Rect.TransformPoint(-m_Rect.rect.width * m_Rect.pivot.x, -m_Rect.rect.height * m_Rect.pivot.y, 0) / m_CanvasScale.transform.localScale.x;
-        rightTop = m_Rect.TransformPoint(m_Rect.rect.width * (1 - m_Rect.pivot.x), m_Rect.rect.height * (1 - m_Rect.pivot.y), 0) / m_CanvasScale.transform.localScale.x;
+        leftBottom = m_Rect.TransformPoint(-m_Rect.rect.width * m_Rect.pivot.x, -m_Rect.rect.height * m_Rect.pivot.y, 0) / canvasScale.transform.localScale.x;
+        rightTop = m_Rect.TransformPoint(m_Rect.rect.width * (1 - m_Rect.pivot.x), m_Rect.rect.height * (1 - m_Rect.pivot.y), 0) / canvasScale.transform.localScale.x;
 
         if (m_ImageMat != null) {
             P.SetSmoothMask(m_ImageMat, m_SmoothHorizontalRate, m_SmoothVerticalRate, new Vector4(leftBottom.x, leftBottom.y, rightTop.x, rightTop.y));
