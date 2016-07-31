@@ -17,55 +17,28 @@ public class InfiniteScrollRect : InfiniteRect, IBeginDragHandler, IDragHandler,
     public event ScrollHandler CrossTopEvent;
     public event ScrollHandler CrossBottomEvent;
 
-    public RectTransform content;
-
+    [SerializeField]
+    private RectTransform m_Content;
+    [SerializeField]
+    private Vector2 m_CellSize = Vector2.zero;
     [SerializeField]
     private float m_Elasticity = 0.1f;
     [SerializeField]
     private float m_DecelerationRate = 0.135f;
-
-    List<InfiniteItem> infiniteItemList = null;
+    [SerializeField]
+    [Range(0, 1)]
+    private float m_NormalizeHeight = 0f;
+    [SerializeField]
+    private float upBorder = 0f;
+    [SerializeField]
+    private float downBorder = 0f;
 
     Vector2 startMousePosition = Vector2.zero;
     Vector2 startContentPosition = Vector2.zero;
-    float velocity = 0f;
-
     Vector2 prevPosition = Vector2.zero;
+    float velocity = 0f;
     bool dragging = false;
-
-    [SerializeField]
-    [Range(0, 1)]
-    private float normalizeHeight = 0f;
-    public float NormalizeHeight {
-        get {
-            return normalizeHeight;
-        }
-        set {
-            normalizeHeight = value;
-        }
-    }
-
-    [SerializeField]
-    private float upBorder = 0f;
-    protected float UpBorder {
-        get {
-            return upBorder;
-        }
-        set {
-            upBorder = value;
-        }
-    }
-
-    [SerializeField]
-    private float downBorder = 0f;
-    protected float DownBorder {
-        get {
-            return downBorder;
-        }
-        set {
-            downBorder = value;
-        }
-    }
+    List<InfiniteItem> infiniteItemList = null;
 
     public void OnBeginDrag (PointerEventData eventData) {
         if (eventData.button != PointerEventData.InputButton.Left) {
@@ -74,7 +47,7 @@ public class InfiniteScrollRect : InfiniteRect, IBeginDragHandler, IDragHandler,
 
         startMousePosition = Vector2.zero;
         RectTransformUtility.ScreenPointToLocalPointInRectangle(rectTransform, eventData.position, eventData.pressEventCamera, out startMousePosition);
-        prevPosition = startContentPosition = content.anchoredPosition;
+        prevPosition = startContentPosition = m_Content.anchoredPosition;
 
         dragging = true;
     }
@@ -100,19 +73,17 @@ public class InfiniteScrollRect : InfiniteRect, IBeginDragHandler, IDragHandler,
     }
 
 
-
     void Start () {
         ResetPosition();
         for (int i = 0; i < infiniteItemList.Count; i++) {
             infiniteItemList[i].Init();
         }
         InfiniteItem.preIndex = InfiniteItem.index - infiniteItemList.Count;
-        downBorder = content.transform.localPosition.y;
-        upBorder = downBorder + 3200f;
+
     }
 
     void LateUpdate () {
-        if (content == null) {
+        if (m_Content == null) {
             return;
         }
 
@@ -120,10 +91,10 @@ public class InfiniteScrollRect : InfiniteRect, IBeginDragHandler, IDragHandler,
         float offset = CalculateOffset();
 
         if (!dragging && (velocity != 0f || offset != 0f)) {
-            Vector2 position = content.anchoredPosition;
+            Vector2 position = m_Content.anchoredPosition;
             if (offset != 0) {
                 float speed = velocity;
-                position[1] = Mathf.SmoothDamp(content.anchoredPosition[1], content.anchoredPosition[1] - offset, ref speed, m_Elasticity, Mathf.Infinity, deltaTime);
+                position[1] = Mathf.SmoothDamp(m_Content.anchoredPosition[1], m_Content.anchoredPosition[1] - offset, ref speed, m_Elasticity, Mathf.Infinity, deltaTime);
                 velocity = speed;
             }
             else {
@@ -137,48 +108,53 @@ public class InfiniteScrollRect : InfiniteRect, IBeginDragHandler, IDragHandler,
             SetContentAnchoredPosition(position);
         }
 
-        if (dragging && content.anchoredPosition != prevPosition) {
-            float newVelocity = (content.anchoredPosition[1] - prevPosition[1]) / deltaTime;
+        if (dragging && m_Content.anchoredPosition != prevPosition) {
+            float newVelocity = (m_Content.anchoredPosition[1] - prevPosition[1]) / deltaTime;
             velocity = Mathf.Lerp(velocity, newVelocity, deltaTime * 10);
-            prevPosition = content.anchoredPosition;
+            prevPosition = m_Content.anchoredPosition;
         }
     }
 
     private void ResetPosition () {
         if (infiniteItemList == null) {
             infiniteItemList = new List<InfiniteItem>();
-            int childCount = content.childCount;
+            InfiniteItem item = null;
+            int childCount = m_Content.childCount;
             for (int i = 0; i < childCount; i++) {
-                infiniteItemList.Add(content.GetChild(i).GetComponent<InfiniteItem>());
+                item = m_Content.GetChild(i).GetComponent<InfiniteItem>();
+                if (item != null) {
+                    infiniteItemList.Add(item);
+                }
             }
         }
 
-        Vector3 offsetMaxWorld = minmaxCornerWorld * 0.5f + maxmaxPositionWorld * 0.5f;
-        content.position = parent.TransformPoint(center.x, offsetMax.y - content.rect.height * 0.5f, 0);
+        Vector3 offsetMaxWorld = minmaxCornerWorld * 0.5f + maxmaxCornerWorld * 0.5f;
+        m_Content.position = parent.TransformPoint(center.x, offsetMax.y - m_Content.rect.height * 0.5f, 0);
         InfiniteItem lastItem = infiniteItemList[0];
-        lastItem.rectTransform.position = offsetMaxWorld - new Vector3(0, (lastItem.minmaxCornerWorld - lastItem.minminPositionWorld).y * 0.5f, 0);
+        lastItem.rectTransform.position = offsetMaxWorld - new Vector3(0, (lastItem.minmaxCornerWorld - lastItem.minminCornerWorld).y * 0.5f, 0);
 
         for (int i = 1; i < infiniteItemList.Count; i++) {
-            float yRate = lastItem.rectTransform.pivot.y;
-            infiniteItemList[i].rectTransform.localPosition = lastItem.rectTransform.localPosition
-                - new Vector3(0, lastItem.rect.height * yRate + infiniteItemList[i].rectTransform.rect.height * (1 - yRate), 0);
+            infiniteItemList[i].rectTransform.anchoredPosition = lastItem.rectTransform.anchoredPosition.AddY(-m_CellSize.y);
             lastItem = infiniteItemList[i];
         }
+
+        downBorder = m_Content.transform.localPosition.y;
+        upBorder = downBorder + 3200f;
     }
 
     private void SetContentAnchoredPosition (Vector2 _position) {
-        _position.x = content.anchoredPosition.x;
-        float d = _position.y - content.anchoredPosition.y;
 
-        if (_position != content.anchoredPosition) {
-            content.anchoredPosition = _position;
+        if (_position != m_Content.anchoredPosition) {
+            _position.x = m_Content.anchoredPosition.x;
+            float d = _position.y - m_Content.anchoredPosition.y;
+            m_Content.anchoredPosition = _position;
             if (d > 0f) {
-                if (content.anchoredPosition.y < upBorder) {
+                if (m_Content.anchoredPosition.y < upBorder) {
                     ProcessCrossTopBorder();
                 }
             }
             else {
-                if (content.anchoredPosition.y > downBorder) {
+                if (m_Content.anchoredPosition.y > downBorder) {
                     ProcessCrossBottomBorder();
                 }
             }
@@ -188,11 +164,11 @@ public class InfiniteScrollRect : InfiniteRect, IBeginDragHandler, IDragHandler,
     private float CalculateOffset () {
         float offset = 0f;
 
-        if (content.anchoredPosition.y > upBorder) {
-            offset = content.anchoredPosition.y - upBorder;
+        if (m_Content.anchoredPosition.y > upBorder) {
+            offset = m_Content.anchoredPosition.y - upBorder;
         }
-        else if (content.anchoredPosition.y < downBorder) {
-            offset = content.anchoredPosition.y - downBorder;
+        else if (m_Content.anchoredPosition.y < downBorder) {
+            offset = m_Content.anchoredPosition.y - downBorder;
         }
 
         return offset;
@@ -203,7 +179,7 @@ public class InfiniteScrollRect : InfiniteRect, IBeginDragHandler, IDragHandler,
     /// </summary>
     private void ProcessCrossTopBorder () {
 
-        Vector3 offsetMax = minmaxCornerWorld * 0.5f + maxmaxPositionWorld * 0.5f;
+        Vector3 offsetMax = minmaxCornerWorld * 0.5f + maxmaxCornerWorld * 0.5f;
         InfiniteItem lastItem = infiniteItemList[infiniteItemList.Count - 1];
         Vector3 offsetBottomLocal = new Vector3(0, lastItem.offsetMin.y, 0);
         Vector3 offsetBottomWorld = lastItem.parent.TransformPoint(offsetBottomLocal);
@@ -238,7 +214,7 @@ public class InfiniteScrollRect : InfiniteRect, IBeginDragHandler, IDragHandler,
     /// <param name="_childrenRect"></param>
     private void ProcessCrossBottomBorder () {
 
-        Vector3 offsetMin = minminPositionWorld * 0.5f + maxminPositionWorld * 0.5f;
+        Vector3 offsetMin = minminCornerWorld * 0.5f + maxminCornerWorld * 0.5f;
         InfiniteItem firstItem = infiniteItemList[0];
         Vector3 offsetTopLocal = new Vector3(0, firstItem.offsetMax.y, 0);
         Vector3 offsetTopWorld = firstItem.parent.TransformPoint(offsetTopLocal);

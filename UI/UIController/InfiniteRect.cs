@@ -58,7 +58,7 @@ public class InfiniteRect : MonoBehaviour {
         }
     }
 
-    public Vector3 maxmaxPositionWorld {  // x max y max corner world position
+    public Vector3 maxmaxCornerWorld {  // x max y max corner world position
         get {
             if (rectTransform.parent != null) {
                 return rectTransform.parent.TransformPoint(rectTransform.offsetMax.x, rectTransform.offsetMax.y, rectTransform.anchoredPosition3D.z);
@@ -80,7 +80,7 @@ public class InfiniteRect : MonoBehaviour {
         }
     }
 
-    public Vector3 maxminPositionWorld { // x max y min corner world position
+    public Vector3 maxminCornerWorld { // x max y min corner world position
         get {
             if (rectTransform.parent != null) {
                 return rectTransform.parent.TransformPoint(rectTransform.offsetMax.x, rectTransform.offsetMin.y, rectTransform.anchoredPosition3D.z);
@@ -91,7 +91,7 @@ public class InfiniteRect : MonoBehaviour {
         }
     }
 
-    public Vector3 minminPositionWorld { // x min y min corner world position
+    public Vector3 minminCornerWorld { // x min y min corner world position
         get {
             if (rectTransform.parent != null) {
                 return rectTransform.parent.TransformPoint(rectTransform.offsetMin.x, rectTransform.offsetMin.y, rectTransform.anchoredPosition3D.z);
