@@ -29,19 +29,33 @@ public class InfiniteItem : InfiniteRect {
         }
     }
 
-    protected virtual void Start() {
+    protected virtual void Start () {
         if (m_ScrollRect != null) {
             m_ScrollRect.CrossTopEvent += DoFirstToLast;
             m_ScrollRect.CrossBottomEvent += DoLastToFirst;
         }
     }
 
-    public virtual void Init() {
+    public virtual void Init () {
         index++;
         txtContent.text = index.ToString();
     }
 
-    public virtual void DoFirstToLast(InfiniteItem _item) {
+    public virtual void SetAnchoredPosition (Vector2[] _positions, float[] _times) {
+        if (_times[0] < 0.001f) {
+            rectTransform.anchoredPosition = _positions[0];
+        }
+
+    }
+
+    public virtual void SetAnchoredPosition (Vector2 _positions, float _times) {
+        if (_times < 0.001f) {
+            rectTransform.anchoredPosition = _positions;
+        }
+
+    }
+
+    public virtual void DoFirstToLast (InfiniteItem _item) {
         if (_item != this) {
             return;
         }
@@ -50,7 +64,7 @@ public class InfiniteItem : InfiniteRect {
         txtContent.text = index.ToString();
     }
 
-    public virtual void DoLastToFirst(InfiniteItem _item) {
+    public virtual void DoLastToFirst (InfiniteItem _item) {
         if (_item != this) {
             return;
         }
@@ -58,5 +72,10 @@ public class InfiniteItem : InfiniteRect {
         index--;
         preIndex--;
     }
+
+    private void LateUpdate () {
+
+    }
+
 
 }

@@ -3,6 +3,7 @@ using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using System;
 
+[DisallowMultipleComponent]
 [ExecuteInEditMode]
 public class SmoothMask : UIBehaviour, ICanvasRaycastFilter {
 

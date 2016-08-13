@@ -9,10 +9,7 @@ public class InfiniteRect : MonoBehaviour {
     private RectTransform m_Rect;
     public RectTransform rectTransform {
         get {
-            if (m_Rect == null) {
-                m_Rect = this.transform as RectTransform;
-            }
-            return m_Rect;
+            return m_Rect ?? (m_Rect = this.transform as RectTransform);
         }
     }
 
@@ -60,45 +57,25 @@ public class InfiniteRect : MonoBehaviour {
 
     public Vector3 maxmaxCornerWorld {  // x max y max corner world position
         get {
-            if (rectTransform.parent != null) {
-                return rectTransform.parent.TransformPoint(rectTransform.offsetMax.x, rectTransform.offsetMax.y, rectTransform.anchoredPosition3D.z);
-            }
-            else {
-                return new Vector3(rectTransform.offsetMax.x, rectTransform.offsetMax.y, rectTransform.anchoredPosition3D.z);
-            }
+            return rectTransform.TransformPoint(rect.width * (1 - pivot.x), rect.height * (1 - pivot.y), rectTransform.anchoredPosition3D.z);
         }
     }
 
     public Vector3 minmaxCornerWorld { // x min y max corner world position
         get {
-            if (rectTransform.parent != null) {
-                return rectTransform.parent.TransformPoint(rectTransform.offsetMin.x, rectTransform.offsetMax.y, rectTransform.anchoredPosition3D.z);
-            }
-            else {
-                return new Vector3(rectTransform.offsetMin.x, rectTransform.offsetMax.y, rectTransform.anchoredPosition3D.z);
-            }
+            return rectTransform.TransformPoint(-rect.width * pivot.x, rect.height * (1 - pivot.y), rectTransform.anchoredPosition3D.z);
         }
     }
 
     public Vector3 maxminCornerWorld { // x max y min corner world position
         get {
-            if (rectTransform.parent != null) {
-                return rectTransform.parent.TransformPoint(rectTransform.offsetMax.x, rectTransform.offsetMin.y, rectTransform.anchoredPosition3D.z);
-            }
-            else {
-                return new Vector3(rectTransform.offsetMax.x, rectTransform.offsetMin.y, rectTransform.anchoredPosition3D.z);
-            }
+            return rectTransform.TransformPoint(rect.width * (1 - pivot.x), -rect.height * pivot.y, rectTransform.anchoredPosition3D.z);
         }
     }
 
     public Vector3 minminCornerWorld { // x min y min corner world position
         get {
-            if (rectTransform.parent != null) {
-                return rectTransform.parent.TransformPoint(rectTransform.offsetMin.x, rectTransform.offsetMin.y, rectTransform.anchoredPosition3D.z);
-            }
-            else {
-                return new Vector3(rectTransform.offsetMin.x, rectTransform.offsetMin.y, rectTransform.anchoredPosition3D.z);
-            }
+            return rectTransform.TransformPoint(-rect.width * pivot.x, -rect.height * pivot.y, rectTransform.anchoredPosition3D.z);
         }
     }
 

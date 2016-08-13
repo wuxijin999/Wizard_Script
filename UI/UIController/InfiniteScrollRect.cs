@@ -26,9 +26,6 @@ public class InfiniteScrollRect : InfiniteRect, IBeginDragHandler, IDragHandler,
     [SerializeField]
     private float m_DecelerationRate = 0.135f;
     [SerializeField]
-    [Range(0, 1)]
-    private float m_NormalizeHeight = 0f;
-    [SerializeField]
     private float upBorder = 0f;
     [SerializeField]
     private float downBorder = 0f;
@@ -116,6 +113,10 @@ public class InfiniteScrollRect : InfiniteRect, IBeginDragHandler, IDragHandler,
     }
 
     private void ResetPosition () {
+        if (m_Content == null) {
+            return;
+        }
+
         if (infiniteItemList == null) {
             infiniteItemList = new List<InfiniteItem>();
             InfiniteItem item = null;
@@ -124,17 +125,24 @@ public class InfiniteScrollRect : InfiniteRect, IBeginDragHandler, IDragHandler,
                 item = m_Content.GetChild(i).GetComponent<InfiniteItem>();
                 if (item != null) {
                     infiniteItemList.Add(item);
+                    item.pivot = Vector2.one * 0.5f;
+                    item.sizeDelta = m_CellSize;
                 }
             }
         }
 
-        Vector3 offsetMaxWorld = minmaxCornerWorld * 0.5f + maxmaxCornerWorld * 0.5f;
-        m_Content.position = parent.TransformPoint(center.x, offsetMax.y - m_Content.rect.height * 0.5f, 0);
+
+        rectTransform.anchorMax = m_Content.anchorMax = Vector2.one * 0.5f;
+        rectTransform.anchorMin = m_Content.anchorMin = Vector2.one * 0.5f;
+        rectTransform.pivot = m_Content.pivot = Vector2.one * 0.5f;
+        m_Content.sizeDelta = rectTransform.sizeDelta;
+        m_Content.anchoredPosition3D = Vector3.zero;
+
         InfiniteItem lastItem = infiniteItemList[0];
-        lastItem.rectTransform.position = offsetMaxWorld - new Vector3(0, (lastItem.minmaxCornerWorld - lastItem.minminCornerWorld).y * 0.5f, 0);
+        lastItem.rectTransform.anchoredPosition = new Vector2(0, m_Content.rect.height * 0.5f - lastItem.rect.height * (1 - lastItem.pivot.y));
 
         for (int i = 1; i < infiniteItemList.Count; i++) {
-            infiniteItemList[i].rectTransform.anchoredPosition = lastItem.rectTransform.anchoredPosition.AddY(-m_CellSize.y);
+            infiniteItemList[i].SetAnchoredPosition(lastItem.rectTransform.anchoredPosition.AddY(-m_CellSize.y), 0f);
             lastItem = infiniteItemList[i];
         }
 
