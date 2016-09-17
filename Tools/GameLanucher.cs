@@ -11,7 +11,7 @@ public class GameLanucher : MonoBehaviour {
         MonoBehaviour.DontDestroyOnLoad(gameBase);
 
         //创建游戏基础物件
-        WindowMgr.Instance.Init();
+        UITools.CreatUIRoot();
         ScenesManager.Instance.LoadLevel("InfiniteScrollRect", SceneType.Main, null, null);
 
     }

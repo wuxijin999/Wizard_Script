@@ -71,20 +71,20 @@ namespace UI {
 
             switch (info.Type) {
                 case WindowType.Normal:
-                    panel.transform.SetParent(UITools.NORMALLAYER);
-                    UITools.MatchingParent(UITools.NORMALLAYER as RectTransform, panel.transform as RectTransform);
+                    panel.transform.SetParent(WindowManager.Instance.uiRoot.normalCanvas.transform);
+                    TransformExtension.MatchWhith(panel.transform as RectTransform, WindowManager.Instance.uiRoot.normalCanvas.transform as RectTransform);
                     break;
                 case WindowType.Modal:
-                    panel.transform.SetParent(UITools.MODALLAYER);
-                    UITools.MatchingParent(UITools.MODALLAYER as RectTransform, panel.transform as RectTransform);
+                    panel.transform.SetParent(WindowManager.Instance.uiRoot.modalCanvas.transform);
+                    TransformExtension.MatchWhith(panel.transform as RectTransform, WindowManager.Instance.uiRoot.modalCanvas.transform as RectTransform);
                     break;
                 case WindowType.Tip:
-                    panel.transform.SetParent(UITools.TIPSLAYER);
-                    UITools.MatchingParent(UITools.TIPSLAYER as RectTransform, panel.transform as RectTransform);
+                    panel.transform.SetParent(WindowManager.Instance.uiRoot.tipsCanvas.transform);
+                    TransformExtension.MatchWhith(panel.transform as RectTransform, WindowManager.Instance.uiRoot.tipsCanvas.transform as RectTransform);
                     break;
                 case WindowType.System:
-                    panel.transform.SetParent(UITools.SYSTEMLAYER);
-                    UITools.MatchingParent(UITools.SYSTEMLAYER as RectTransform, panel.transform as RectTransform);
+                    panel.transform.SetParent(WindowManager.Instance.uiRoot.systemCanvas.transform);
+                    TransformExtension.MatchWhith(panel.transform as RectTransform, WindowManager.Instance.uiRoot.systemCanvas.transform as RectTransform);
                     break;
             }
 

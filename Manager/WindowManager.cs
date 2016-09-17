@@ -4,13 +4,17 @@ using System.Collections.Generic;
 using UnityEngine;
 
 namespace UI {
-    public class WindowMgr : Singleton<WindowMgr> {
+    public class WindowManager : Singleton<WindowManager> {
+
+        public UIRoot uiRoot {
+            get; set;
+        }
 
         List<WindowViewBase> activedWin = new List<WindowViewBase>();
         List<WindowViewBase> unActivedWin = new List<WindowViewBase>();
 
         public override void Init () {
-            UITools.CreatUIRoot();
+
         }
 
         /// <summary>
@@ -19,26 +23,33 @@ namespace UI {
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
         public T Open<T> () where T : WindowViewBase, new() {
-            T win = new T();
 
             if (CheckOpen<T>()) {
                 return null;
             }
+            else {
+                T win = null;
 
-            for (int i = 0; i < unActivedWin.Count; i++) {
-                if (unActivedWin[i] is T) {
-                    win = unActivedWin[i] as T;
-                    unActivedWin.Remove(win);
-                    activedWin.Add(win);
-                    win.Open();
-                    return win;
+                for (int i = 0; i < unActivedWin.Count; i++) {
+                    if (unActivedWin[i] is T) {
+                        win = unActivedWin[i] as T;
+                        break;
+                    }
                 }
+
+                if (win != null) {
+                    unActivedWin.Remove(win);
+                }
+                else {
+                    win = new T();
+                }
+
+                activedWin.Add(win);
+                win.Open();
+
+                return win;
             }
 
-            win.Open();
-            activedWin.Add(win);
-
-            return win;
         }
 
         /// <summary>
@@ -58,14 +69,16 @@ namespace UI {
 
             if (win == null) {
                 Debug.Log(string.Format("该窗口已经关闭！"));
+                return null;
+            }
+            else {
+                activedWin.Remove(win);
+                unActivedWin.Add(win);
+                win.Close();
+
                 return win;
             }
 
-            activedWin.Remove(win);
-            unActivedWin.Add(win);
-            win.Close();
-
-            return win;
         }
 
         /// <summary>
@@ -93,17 +106,20 @@ namespace UI {
 
             if (win == null) {
                 Debug.Log(string.Format("这个窗口并没有创建！"));
-                return;
+            }
+            else {
+                activedWin.Remove(win);
+                unActivedWin.Remove(win);
+                win.DoDestroy();
             }
 
-            win.DoDestroy();
         }
 
         private bool CheckOpen<T> () where T : WindowViewBase {
 
             for (int i = 0; i < activedWin.Count; i++) {
                 if (activedWin[i] is T) {
-                    Debug.Log(string.Format("<color=yellow>{0}</color>已经打开！", activedWin[i].GetType().FullName));
+                    Debug.Log(string.Format("<color=yellow>{0}</color>已经打开！", activedWin[i].GetType().Name));
                     return true;
                 }
             }
