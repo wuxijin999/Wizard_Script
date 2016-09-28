@@ -7,23 +7,16 @@ using System.Collections.Generic;
 public class RefDataManager : Singleton<RefDataManager> {
 
     #region Fields
-    public Dictionary<int, RefSkill> skill {
-        get; private set;
-    }
-
-    public Dictionary<int, RefHitData> hitData {
-        get; private set;
-    }
-
-    public Dictionary<int, RefWindowConfig> windowConfig {
-        get; private set;
-    }
+    public Dictionary<int, RefSkill> skill { get; private set; }
+    public Dictionary<int, RefHitData> hitData { get; private set; }
+    public Dictionary<int, RefWindowConfig> windowConfig { get; private set; }
+    public Dictionary<int, RefEffect> effect { get; private set; }
     #endregion
-
 
     public override void Init () {
         base.Init();
 
+        effect = ParseRefData<RefEffect>("effect");
         skill = ParseRefData<RefSkill>("skill");
         hitData = ParseRefData<RefHitData>("hitdata");
         windowConfig = ParseRefData<RefWindowConfig>("windowConfig");

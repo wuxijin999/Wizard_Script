@@ -37,6 +37,11 @@ public static class SFXExtersion {
         return effect;
     }
 
+    static public EffectCtrl SetSortingOrder (this EffectCtrl effect, int _order) {
+
+        return effect;
+    }
+
     static public void OnComplete (this EffectCtrl effect, Action _callBack) {
         effect.onComplte = _callBack;
     }
