@@ -30,19 +30,19 @@ namespace UI {
         }
 
         WareHouseModel model;
-
         Dictionary<int, Grid> indexGridDict;
         Dictionary<int, List<int>> itemIdGridIndexSetDict;
         #endregion
 
         public WareHouseController () {
-            indexGridDict = new Dictionary<int, Grid>();
-            itemIdGridIndexSetDict = new Dictionary<int, List<int>>();
+
+            model = model ?? ModelManager.Instance.GetModel<WareHouseModel>();
+            indexGridDict = indexGridDict ?? new Dictionary<int, Grid>();
+            itemIdGridIndexSetDict = itemIdGridIndexSetDict ?? new Dictionary<int, List<int>>();
             RefreshWareHouse();
         }
 
         #region Interaction
-
 
         public bool TryGetIndexSetByItemId (int _itemId, out List<int> _indexSet) {
             List<int> indexSet;

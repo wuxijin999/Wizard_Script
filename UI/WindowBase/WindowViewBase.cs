@@ -16,6 +16,7 @@ namespace UI {
         public WindowViewBase () {
 
         }
+
         public WindowViewBase Open () {
             if (panel == null) {
                 LoadResource();
@@ -24,6 +25,7 @@ namespace UI {
             }
 
             OnPreOpen();
+            panel.SetActive(true);
             PlayOpenAnim();
 
             return this;
@@ -65,9 +67,6 @@ namespace UI {
         }
 
         protected virtual void OnPreOpen () {
-            if (!panel.activeInHierarchy) {
-                panel.SetActive(true);
-            }
 
             switch (info.Type) {
                 case WindowType.Normal:
@@ -144,6 +143,7 @@ namespace UI {
                     break;
             }
         }
+
         private void PlayCloseAnim () {
             switch (info.AnimType) {
                 case WinAnimType.OffSet:
@@ -170,9 +170,11 @@ namespace UI {
                     break;
             }
         }
+
         private void OnOpenComplete () {
             OnAfterOpen();
         }
+
         private void OnCloseComplete () {
             OnAfterClose();
         }

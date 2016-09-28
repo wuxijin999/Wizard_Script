@@ -8,7 +8,6 @@ namespace UI {
 
     public class WindowBizBase {
 
-        protected ModelBase model = null;
         public WindowBizBase () {
 
         }

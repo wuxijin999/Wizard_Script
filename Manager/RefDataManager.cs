@@ -12,7 +12,11 @@ public class RefDataManager : Singleton<RefDataManager> {
     }
 
     public Dictionary<int, RefHitData> hitData {
-        get;private set;
+        get; private set;
+    }
+
+    public Dictionary<int, RefWindowConfig> windowConfig {
+        get; private set;
     }
     #endregion
 
@@ -22,6 +26,7 @@ public class RefDataManager : Singleton<RefDataManager> {
 
         skill = ParseRefData<RefSkill>("skill");
         hitData = ParseRefData<RefHitData>("hitdata");
+        windowConfig = ParseRefData<RefWindowConfig>("windowConfig");
     }
 
     public override void UnInit () {

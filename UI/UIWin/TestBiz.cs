@@ -17,7 +17,6 @@ namespace UI {
         #endregion
 
         public TestBiz () {
-            model = ModelManager.Instance.GetModel<TestModel>();
         }
 
         #region Interaction

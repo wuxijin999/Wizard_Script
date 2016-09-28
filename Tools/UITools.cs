@@ -5,10 +5,9 @@ public class UITools {
 
     static public void CreatUIRoot () {
 
-        GameObject tempGo = GameObject.Instantiate(AssetLoadTools.Load_UI("UIRoot")) as GameObject;
-        GameObject.DontDestroyOnLoad(tempGo);
-        tempGo.name = "UIRoot";
-
+        GameObject root = GameObject.Instantiate(AssetLoadTools.Load_UI("UIRoot")) as GameObject;
+        GameObject.DontDestroyOnLoad(root);
+        root.name = "UIRoot";
     }
 
     static public void MatchingParent (RectTransform _parent, RectTransform _child) {

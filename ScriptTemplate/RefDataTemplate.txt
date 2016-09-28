@@ -7,21 +7,18 @@ using System.Collections;
 
 public class #ClassName# : RefDataBase {
 
-    public int Id {
-        get; private set;
+    public int id { get; private set; }
+
+    static public bool TryGet (int _id, out #ClassName# _data) {
+        bool successful = false;
+        successful = RefDataManager.Instance.#ClassName#.TryGetValue(_id, out _data);
+
+        if (!successful) {
+            WDebug.Log(string.Format("Failed to get #ClassName# data by id:<color=yellow>{0}</color> ", _id));
+        }
+
+        return successful;
     }
-
-    static public #ClassName# Get (int _id) {
-        #ClassName# r = null;
-
-      //  if (!RefDataManager.Instance.#Dictionary#.TryGetValue(_id, out r)) {
-			   WDebug.Log(string.Format("Failed to get #ClassName# data by id:<color=yellow>{0}</color> ", _id));
-      // }
-
-        return r;
-    }
-
-
 }
 
 
