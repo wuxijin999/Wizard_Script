@@ -11,7 +11,7 @@ using System.Collections.Generic;
 
 namespace UI {
 
-    public class WareHouseController : WindowBizBase {
+    public class WareHouseController  {
 
         #region Member
 

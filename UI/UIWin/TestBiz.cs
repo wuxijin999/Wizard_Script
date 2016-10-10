@@ -10,7 +10,7 @@ using WizardSystem;
 
 namespace UI {
 
-    public class TestBiz : WindowBizBase {
+    public class TestBiz  {
 
         #region Member
 

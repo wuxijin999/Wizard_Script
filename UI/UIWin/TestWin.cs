@@ -14,7 +14,6 @@ namespace UI {
 
         #region Member
         Button btnClick;
-        TestBiz biz = null;
         #endregion
 
         #region Built-in
@@ -33,12 +32,6 @@ namespace UI {
 
         protected override void OnPreOpen () {
             base.OnPreOpen();
-            if (biz == null) {
-                biz = new TestBiz();
-            }
-            else {
-                biz.Reset();
-            }
 
         }
 
