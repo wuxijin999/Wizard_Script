@@ -6,6 +6,15 @@ using System;
 namespace UI {
     public class WindowViewBase {
 
+        public enum WindowState {
+            Closed,
+            Opening,
+            Opened,
+            Closing,
+        }
+
+        public WindowState windowState { get; private set; }
+
         protected GameObject panel;
         protected WindowInfo info;
         Action openCallBack = null;
@@ -24,6 +33,7 @@ namespace UI {
                 AddListeners();
             }
 
+            windowState = WindowState.Closed;
             OnPreOpen();
             panel.SetActive(true);
             PlayOpenAnim();
@@ -113,6 +123,7 @@ namespace UI {
             panel.SetActive(false);
         }
         private void PlayOpenAnim () {
+            windowState = WindowState.Opening;
             switch (info.AnimType) {
                 case WinAnimType.OffSet:
                     switch (info.OffsetStyle) {
@@ -173,10 +184,12 @@ namespace UI {
 
         private void OnOpenComplete () {
             OnAfterOpen();
+            windowState = WindowState.Opened;
         }
 
         private void OnCloseComplete () {
             OnAfterClose();
+            windowState = WindowState.Closed;
         }
 
         private void LoadResource () {

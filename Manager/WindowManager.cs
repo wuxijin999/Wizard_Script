@@ -10,8 +10,7 @@ namespace UI {
             get; set;
         }
 
-        List<WindowViewBase> activedWin = new List<WindowViewBase>();
-        List<WindowViewBase> unActivedWin = new List<WindowViewBase>();
+        Dictionary<int, WindowViewBase> windowDict = new Dictionary<int, WindowViewBase>();
 
         public override void Init () {
 
@@ -22,110 +21,97 @@ namespace UI {
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
-        public T Open<T> () where T : WindowViewBase, new() {
+        public T Open<T> (int _id) where T : WindowViewBase, new() {
 
-            if (CheckOpen<T>()) {
-                return null;
-            }
-            else {
-                T win = null;
-
-                for (int i = 0; i < unActivedWin.Count; i++) {
-                    if (unActivedWin[i] is T) {
-                        win = unActivedWin[i] as T;
-                        break;
-                    }
-                }
-
-                if (win != null) {
-                    unActivedWin.Remove(win);
+            WindowViewBase win = null;
+            if (TryGetWindow(_id, out win)) {
+                if (win.windowState == WindowViewBase.WindowState.Closed) {
+                    win.Open();
                 }
                 else {
-                    win = new T();
+                    WDebug.Log(string.Format("Id为:{0}的窗口已经打开！", _id));
                 }
-
-                activedWin.Add(win);
-                win.Open();
-
-                return win;
+            }
+            else {
+                WDebug.Log(string.Format("Id为:{0}的窗口无法获得！", _id));
             }
 
+            return (T)win;
         }
 
         /// <summary>
         /// 关闭窗口
         /// </summary>
         /// <typeparam name="T"></typeparam>
-        public T Close<T> () where T : WindowViewBase {
+        public T Close<T> (int _id) where T : WindowViewBase {
 
-            T win = null;
-
-            for (int i = 0; i < activedWin.Count; i++) {
-                if (activedWin[i] is T) {
-                    win = activedWin[i] as T;
-                    break;
+            WindowViewBase win = null;
+            if (TryGetWindow(_id, out win)) {
+                if (win.windowState == WindowViewBase.WindowState.Opened) {
+                    win.Close();
+                }
+                else {
+                    WDebug.Log(string.Format("Id为:{0}的窗口已经关闭！", _id));
                 }
             }
-
-            if (win == null) {
-                Debug.Log(string.Format("该窗口已经关闭！"));
-                return null;
-            }
             else {
-                activedWin.Remove(win);
-                unActivedWin.Add(win);
-                win.Close();
-
-                return win;
+                WDebug.Log(string.Format("Id为:{0}的窗口无法获得！", _id));
             }
 
+            return (T)win;
         }
 
         /// <summary>
         /// 销毁窗口
         /// </summary>
         /// <typeparam name="T"></typeparam>
-        public void DestroyWin<T> () where T : WindowViewBase {
-            T win = null;
-
-            for (int i = 0; i < activedWin.Count; i++) {
-                if (activedWin[i] is T) {
-                    win = activedWin[i] as T;
-                    break;
-                }
-            }
-
-            if (win == null) {
-                for (int i = 0; i < unActivedWin.Count; i++) {
-                    if (unActivedWin[i] is T) {
-                        win = unActivedWin[i] as T;
-                        break;
-                    }
-                }
-            }
-
-            if (win == null) {
-                Debug.Log(string.Format("这个窗口并没有创建！"));
-            }
-            else {
-                activedWin.Remove(win);
-                unActivedWin.Remove(win);
+        public void DestroyWin (int _id) {
+            WindowViewBase win = null;
+            if (TryGetWindow(_id, out win)) {
+                windowDict.Remove(_id);
                 win.DoDestroy();
             }
-
+            else {
+                WDebug.Log(string.Format("Id为:{0}的窗口无法获得！", _id));
+            }
         }
 
-        private bool CheckOpen<T> () where T : WindowViewBase {
+        private bool CheckOpen (int _id) {
+            WindowViewBase win = null;
+            if (TryGetWindow(_id, out win)) {
+                return win.windowState == WindowViewBase.WindowState.Opened;
+            }
+            else {
+                return false;
+            }
+        }
 
-            for (int i = 0; i < activedWin.Count; i++) {
-                if (activedWin[i] is T) {
-                    Debug.Log(string.Format("<color=yellow>{0}</color>已经打开！", activedWin[i].GetType().Name));
-                    return true;
+        private bool TryGetWindow<T> (int _id, out T _win) where T : WindowViewBase, new() {
+
+            bool get = false;
+            WindowViewBase windowBase = null;
+            if (!windowDict.TryGetValue(_id, out windowBase)) {
+                RefWindowConfig config = null;
+                if (RefWindowConfig.TryGet(_id, out config)) {
+                    _win = new T();
+                    windowDict[_id] = _win;
+                    get = true;
+                }
+                else {
+                    _win = null;
+                    get = false;
                 }
             }
+            else {
+                _win = (T)windowBase;
+                get = true;
+            }
 
-            return false;
+            return get;
         }
+
+
     }
+
 
 }

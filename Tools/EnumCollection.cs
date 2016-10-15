@@ -11,9 +11,7 @@ public enum WindowType {
 public enum WinAnimType {
     None,
     OffSet,
-    Alpha,
     Scale,
-    AlphaScale,
 }
 
 public enum WinOffsetAnimStyle {

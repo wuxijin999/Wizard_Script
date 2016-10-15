@@ -18,7 +18,7 @@ namespace UI {
         public WinOffsetAnimStyle OffsetStyle;
 
         public bool ClickEmptyToClose = false;
-        public bool NeedMask = true;
+        public bool NeedMask = false;
         public int MaskAlpha = 128;
 
         public bool IsRaycastValid {
