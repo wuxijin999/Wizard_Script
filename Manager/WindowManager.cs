@@ -26,7 +26,8 @@ namespace UI {
             WindowViewBase win = null;
             if (TryGetWindow(_id, out win)) {
                 if (win.windowState == WindowViewBase.WindowState.Closed) {
-                    win.Open();
+                    CloseOtherNormalWindow(_id);
+                    win.Open(_id);
                 }
                 else {
                     WDebug.Log(string.Format("Id为:{0}的窗口已经打开！", _id));
@@ -43,7 +44,7 @@ namespace UI {
         /// 关闭窗口
         /// </summary>
         /// <typeparam name="T"></typeparam>
-        public T Close<T> (int _id) where T : WindowViewBase {
+        public WindowViewBase Close (int _id) {
 
             WindowViewBase win = null;
             if (TryGetWindow(_id, out win)) {
@@ -58,7 +59,7 @@ namespace UI {
                 WDebug.Log(string.Format("Id为:{0}的窗口无法获得！", _id));
             }
 
-            return (T)win;
+            return win;
         }
 
         /// <summary>
@@ -83,6 +84,14 @@ namespace UI {
             }
             else {
                 return false;
+            }
+        }
+
+        private void CloseOtherNormalWindow (int _id) {
+            foreach (int key in windowDict.Keys) {
+                if (key != _id) {
+                    Close(key);
+                }
             }
         }
 

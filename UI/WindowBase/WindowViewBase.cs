@@ -14,7 +14,7 @@ namespace UI {
         }
 
         public WindowState windowState { get; private set; }
-
+        public int windowId { get; private set; }
         protected GameObject panel;
         protected WindowInfo info;
         Action openCallBack = null;
@@ -26,7 +26,8 @@ namespace UI {
 
         }
 
-        public WindowViewBase Open () {
+        public WindowViewBase Open (int _id) {
+            windowId = _id;
             if (panel == null) {
                 LoadResource();
                 BindController();
@@ -44,6 +45,18 @@ namespace UI {
         public WindowViewBase Close () {
             OnPreClose();
             PlayCloseAnim();
+
+            return this;
+        }
+
+        public WindowViewBase Close (bool _playAnimation) {
+            OnPreClose();
+            if (_playAnimation) {
+                PlayCloseAnim();
+            }
+            else {
+                OnCloseComplete();
+            }
 
             return this;
         }
@@ -66,7 +79,7 @@ namespace UI {
 
 
         protected virtual void BindController () {
-            info = panel.GetComponent<WindowInfo>();
+            info = panel.AddMissComponent<WindowInfo>();
             info.IsRaycastValid = false;
 
             animator = panel.GetComponent<Animator>();
@@ -156,6 +169,7 @@ namespace UI {
         }
 
         private void PlayCloseAnim () {
+            windowState = WindowState.Closing;
             switch (info.AnimType) {
                 case WinAnimType.OffSet:
                     switch (info.OffsetStyle) {
