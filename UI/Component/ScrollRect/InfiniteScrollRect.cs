@@ -2,32 +2,58 @@
 //无限循环控件，基于UGUI
 //目前仅支持垂直方向
 //---------------------------------------------
-using UnityEngine;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine.UI;
-using UnityEngine.EventSystems;
 using System;
-using DG.Tweening;
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.EventSystems;
 
+[DisallowMultipleComponent]
 [RequireComponent(typeof(RectTransform))]
 public class InfiniteScrollRect : InfiniteRect, IBeginDragHandler, IDragHandler, IEndDragHandler {
 
-    public delegate void ScrollHandler (InfiniteItem _item);
-    public event ScrollHandler CrossTopEvent;
-    public event ScrollHandler CrossBottomEvent;
+    Action<int, InfiniteItem> moveNextCallBack;
+    Action<int, InfiniteItem> moveLastCallBack;
 
     [SerializeField]
     private RectTransform m_Content;
     [SerializeField]
     private Vector2 m_CellSize = Vector2.zero;
+    public Vector2 cellSize {
+        get { return m_CellSize; }
+        set {
+            m_CellSize = value;
+            upBorder = m_CellSize.y * m_Capacity;
+        }
+    }
     [SerializeField]
     private float m_Elasticity = 0.1f;
     [SerializeField]
     private float m_DecelerationRate = 0.135f;
     [SerializeField]
+    private int m_Capacity = 0;
+    public int capacity {
+        get { return m_Capacity; }
+        set {
+            m_Capacity = value;
+            upBorder = m_CellSize.y * m_Capacity;
+        }
+    }
+
+    private int m_PreIndex = 0;
+    int preIndex {
+        get { return m_PreIndex; }
+        set {
+            m_PreIndex = Mathf.Clamp(value, 0, capacity - itemCount - 1);
+        }
+    }
+
+    private int m_RearIndex = 0;
+    int rearIndex {
+        get { return m_RearIndex; }
+        set { m_RearIndex = Mathf.Clamp(value, Mathf.Min(capacity, itemCount) - 1, m_Capacity - 1); }
+    }
+
     private float upBorder = 0f;
-    [SerializeField]
     private float downBorder = 0f;
 
     Vector2 startMousePosition = Vector2.zero;
@@ -36,6 +62,17 @@ public class InfiniteScrollRect : InfiniteRect, IBeginDragHandler, IDragHandler,
     float velocity = 0f;
     bool dragging = false;
     List<InfiniteItem> infiniteItemList = null;
+    int itemCount { get { return infiniteItemList == null ? 0 : infiniteItemList.Count; } }
+
+    public InfiniteScrollRect AddMoveNextListener (Action<int, InfiniteItem> _moveNextCallBack) {
+        moveNextCallBack = _moveNextCallBack;
+        return this;
+    }
+
+    public InfiniteScrollRect AddMoveLastListener (Action<int, InfiniteItem> _moveLastCallBack) {
+        moveLastCallBack = _moveLastCallBack;
+        return this;
+    }
 
     public void OnBeginDrag (PointerEventData eventData) {
         if (eventData.button != PointerEventData.InputButton.Left) {
@@ -131,7 +168,6 @@ public class InfiniteScrollRect : InfiniteRect, IBeginDragHandler, IDragHandler,
             }
         }
 
-
         rectTransform.anchorMax = m_Content.anchorMax = Vector2.one * 0.5f;
         rectTransform.anchorMin = m_Content.anchorMin = Vector2.one * 0.5f;
         rectTransform.pivot = m_Content.pivot = Vector2.one * 0.5f;
@@ -146,8 +182,6 @@ public class InfiniteScrollRect : InfiniteRect, IBeginDragHandler, IDragHandler,
             lastItem = infiniteItemList[i];
         }
 
-        downBorder = m_Content.transform.localPosition.y;
-        upBorder = downBorder + 3200f;
     }
 
     private void SetContentAnchoredPosition (Vector2 _position) {
@@ -198,8 +232,11 @@ public class InfiniteScrollRect : InfiniteRect, IBeginDragHandler, IDragHandler,
             item = infiniteItemList[i];
             min = item.parent.TransformPoint(new Vector3(0, item.offsetMin.y, 0));
             if (min.y > offsetMax.y) {
-                if (CrossTopEvent != null) {
-                    CrossTopEvent(item);
+                preIndex--;
+                rearIndex--;
+
+                if (moveLastCallBack != null) {
+                    moveLastCallBack(0, item);
                 }
                 offsetBottomWorld = item.parent.TransformPoint(offsetBottomLocal - new Vector3(0, item.rect.height * (1f - item.pivot.y), 0));
                 offsetBottomLocal = offsetBottomLocal - new Vector3(0, item.rect.height, 0);
@@ -233,8 +270,10 @@ public class InfiniteScrollRect : InfiniteRect, IBeginDragHandler, IDragHandler,
             item = infiniteItemList[i];
             max = item.parent.TransformPoint(new Vector3(0, item.offsetMax.y, 0));
             if (max.y < offsetMin.y) {
-                if (CrossBottomEvent != null) {
-                    CrossBottomEvent(item);
+                preIndex++;
+                rearIndex++;
+                if (moveNextCallBack != null) {
+                    moveNextCallBack(0, item);
                 }
                 offsetTopWorld = item.parent.TransformPoint(offsetTopLocal + new Vector3(0, item.rect.height * item.pivot.y, 0));
                 offsetTopLocal = offsetTopLocal + new Vector3(0, item.rect.height, 0);
@@ -249,4 +288,6 @@ public class InfiniteScrollRect : InfiniteRect, IBeginDragHandler, IDragHandler,
         }
 
     }
+
+
 }
