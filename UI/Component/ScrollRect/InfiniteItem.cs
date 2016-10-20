@@ -17,22 +17,16 @@ public class InfiniteItem : InfiniteRect {
         }
         set {
             if (m_ScrollRect != null) {
-                m_ScrollRect.CrossTopEvent -= DoFirstToLast;
-                m_ScrollRect.CrossBottomEvent -= DoLastToFirst;
             }
             m_ScrollRect = value;
 
             if (m_ScrollRect != null) {
-                m_ScrollRect.CrossTopEvent += DoFirstToLast;
-                m_ScrollRect.CrossBottomEvent += DoLastToFirst;
             }
         }
     }
 
     protected virtual void Start () {
         if (m_ScrollRect != null) {
-            m_ScrollRect.CrossTopEvent += DoFirstToLast;
-            m_ScrollRect.CrossBottomEvent += DoLastToFirst;
         }
     }
 
