@@ -2,14 +2,15 @@
 using System.Collections;
 
 public class CameraCtrl : MonoBehaviour {
+
     [System.Serializable]
     public struct CameraData {
         public Vector3 localEuler;
         public Vector3 localPos;
     }
-    public Transform FollowObj;
-    public Transform Pivot;
-    public Transform Zoom;
+    public Transform followObject;
+    public Transform pivot;
+    public Transform zoom;
 
     [SerializeField]
     public CameraData camSetting;
@@ -45,58 +46,58 @@ public class CameraCtrl : MonoBehaviour {
 
     public float ZoomX {
         set {
-            camSetting.localPos = new Vector3(value, camSetting.localPos.y, camSetting.localPos.z);
+            camSetting.localPos = camSetting.localPos.SetX(value);
             dirty = true;
         }
     }
     public float ZoomY {
         set {
-            camSetting.localPos = new Vector3(camSetting.localPos.x, value, camSetting.localPos.z);
+            camSetting.localPos = camSetting.localPos.SetY(value);
             dirty = true;
         }
     }
     public float ZoomZ {
         set {
-            camSetting.localPos = new Vector3(camSetting.localPos.x, camSetting.localPos.y, value);
+            camSetting.localPos =camSetting.localPos.SetZ(value);
             dirty = true;
         }
     }
 
     public float RotX {
         set {
-            camSetting.localEuler = new Vector3(value, camSetting.localEuler.y, camSetting.localEuler.z);
+            camSetting.localEuler = camSetting.localEuler.SetX(value);
             dirty = true;
         }
     }
     public float RotY {
         set {
-            camSetting.localEuler = new Vector3(camSetting.localEuler.x, value, camSetting.localEuler.z);
+            camSetting.localEuler = camSetting.localEuler.SetY(value);
             dirty = true;
         }
     }
     public float RotZ {
         set {
-            camSetting.localEuler = new Vector3(camSetting.localEuler.x, camSetting.localEuler.y, value);
+            camSetting.localEuler = camSetting.localEuler.SetZ(value);
             dirty = true;
         }
     }
 
-    private void OnEnable() {
+    private void OnEnable () {
         dirty = true;
     }
 
 
-    private void LateUpdate() {
-        if (FollowObj != null) {
-            this.transform.position = FollowObj.position;
+    private void LateUpdate () {
+        if (followObject != null) {
+            this.transform.position = followObject.position;
             //this.transform.rotation = FollowObj.rotation;
         }
 
         if (dirty) {
             timer = duration;
-            beginEuler = Pivot.localEulerAngles;
+            beginEuler = pivot.localEulerAngles;
             endEuler = camSetting.localEuler;
-            beginPos = Zoom.localPosition;
+            beginPos = zoom.localPosition;
             endPos = camSetting.localPos;
             dirty = false;
         }
@@ -104,16 +105,16 @@ public class CameraCtrl : MonoBehaviour {
         if (timer > 0f) {
             timer -= Time.deltaTime;
             t = Mathf.Clamp01((duration - timer) / duration);
-            Pivot.localEulerAngles = Vector3.Lerp(beginEuler, endEuler, t);
-            Zoom.localPosition = Vector3.Lerp(beginPos, endPos, t);
+            pivot.localEulerAngles = Vector3.Lerp(beginEuler, endEuler, t);
+            zoom.localPosition = Vector3.Lerp(beginPos, endPos, t);
         }
     }
 
 
-    void OnDrawGizmos() {
-        if (mCamera!=null) {
+    void OnDrawGizmos () {
+        if (mCamera != null) {
             Gizmos.color = Color.red;
-            Gizmos.DrawSphere(mCamera.transform.position,0.3f);
+            Gizmos.DrawSphere(mCamera.transform.position, 0.3f);
         }
     }
 }
