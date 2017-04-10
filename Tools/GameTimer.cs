@@ -70,7 +70,7 @@ public class GameTimer : SingletonMonobehavior<GameTimer> {
 
     public void AddClock(DateTime _dateTime, int _repeatInterval, int _repeatTimes, Action _callBack) {//固定时刻触发
         if (_dateTime < System.DateTime.Now || _repeatInterval < 1 || _repeatTimes < 1 || _callBack == null) {
-            Debug.Log("Invaild clock!");
+            WDebug.Log("Invaild clock!");
             return;
         }
         Clock clock = new Clock(_dateTime, _repeatInterval, _repeatTimes, _callBack);
