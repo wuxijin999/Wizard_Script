@@ -9,19 +9,18 @@ public class RefDataLoadTest : MonoBehaviour {
 
     void Start () {
         RefDataManager.Instance.Init();
-        RefHitData hitData = RefHitData.Get(1);
+        RefSkill hitData = RefSkill.Get(1);
 
         Debug.Log(
-             hitData.Id + "\r\n" +
-             hitData.AttackMode + "\r\n"
-            + hitData.TargetMode + "\r\n"
-            + hitData.TargetNum + "\r\n"
-            + hitData.TargetFaction + "\r\n"
-            + hitData.DamageType + "\r\n"
-            + hitData.DamageRate + "\r\n"
-            + hitData.DecisionCenter[0] + "\r\n"
-            + hitData.DecisionRadius[0] + "\r\n"
+             hitData.SkillId + "\r\n" +
+             hitData.SkillName + "\r\n"
+            + hitData.Radius + "\r\n"
+            + hitData.PostSkillId + "\r\n"
             );
+    }
+
+    private void Update () {
+        WDebug.Log(Time.frameCount.ToString());
     }
 
 }

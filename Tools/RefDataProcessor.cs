@@ -155,7 +155,7 @@ public class RefDataProcessor {
 
     private static string GetFullPath (string _fileName) {
         string fullPath = string.Empty;
-        string relativePath = StringUtil.StringBuild("Assets/ExternalResources/RefData/", _fileName, ".txt");
+        string relativePath = StringUtil.StringBuild("Assets/RefData/", _fileName, ".txt");
 
         return relativePath;
     }

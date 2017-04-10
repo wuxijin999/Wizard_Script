@@ -9,43 +9,43 @@ using Fight;
 
 public class RefHitData : RefDataBase {
 
-    public int Id {
+    public int id {
         get; private set;
     }
 
-    public AttackMode AttackMode {
+    public AttackMode attackMode {
         get; private set;
     }
 
-    public TargetMode TargetMode {
+    public TargetMode targetMode {
         get; private set;
     }
 
-    public int TargetNum {
+    public int targetNum {
         get; private set;
     }
 
-    public Faction TargetFaction {
+    public Faction targetFaction {
         get; private set;
     }
 
-    public DamageType DamageType {
+    public DamageType damageType {
         get; private set;
     }
 
-    public int DamageRate {
+    public int damageRate {
         get; private set;
     }
 
-    public Vector3[] DecisionCenter {
+    public Vector3[] decisionCenter {
         get; private set;
     }
 
-    public float[] DecisionRadius {
+    public float[] decisionRadius {
         get; private set;
     }
 
-    public int Speed {
+    public int speed {
         get; private set;
     }
 

@@ -3,6 +3,8 @@
 //    [Date]   :           Saturday, May 14, 2016
 //--------------------------------------------------------
 using System.Collections.Generic;
+using System;
+using System.Threading;
 
 public class RefDataManager : Singleton<RefDataManager> {
 
@@ -16,15 +18,35 @@ public class RefDataManager : Singleton<RefDataManager> {
     public override void Init () {
         base.Init();
 
-        effect = ParseRefData<RefEffect>("effect");
-        skill = ParseRefData<RefSkill>("skill");
-        hitData = ParseRefData<RefHitData>("hitdata");
-        windowConfig = ParseRefData<RefWindowConfig>("windowConfig");
+        //         long startTick = DateTime.Now.Ticks;
+        //         //  effect = ParseRefData<RefEffect>("effect");
+        //         skill = ParseRefData<RefSkill>("skill");
+        //         long endTicks = DateTime.Now.Ticks;
+        // 
+        //         WDebug.Log("时长：" + (endTicks - startTick) / 10000);
+
+        Thread trh = new Thread(LoadSkill);
+        trh.Start();
+
+        //  hitData = ParseRefData<RefHitData>("hitdata");
+        //  windowConfig = ParseRefData<RefWindowConfig>("windowConfig");
     }
 
     public override void UnInit () {
 
         base.UnInit();
+    }
+
+
+    private void LoadSkill () {
+        long startTick = DateTime.Now.Ticks;
+
+        for (int i = 0; i < 100; i++) {
+            skill = ParseRefData<RefSkill>("skill");
+        }
+
+        long endTicks = DateTime.Now.Ticks;
+        WDebug.Log("时长：" + (endTicks - startTick) / 10000);
     }
 
 

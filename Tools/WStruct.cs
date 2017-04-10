@@ -7,7 +7,7 @@ public class ClampInt {
     int max;
 
     private int mValue;
-    public int Value {
+    public int value {
         get {
             return mValue;
         }
@@ -29,7 +29,7 @@ public class ClampInt {
         float max;
 
         private float mValue;
-        public float Value {
+        public float value {
             get {
                 return mValue;
             }

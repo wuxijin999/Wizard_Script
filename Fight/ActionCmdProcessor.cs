@@ -8,15 +8,16 @@ public class ActionCmdProcessor {
     Queue<ActionCmd> cmdQueue = new Queue<ActionCmd>();
 
     ActionCmd actionCmd = null;
-    public void PuctCmd(ActionCmd _cmd) {
+    public void PuctCmd (ActionCmd _cmd) {
         cmdQueue.Enqueue(_cmd);
     }
 
 
-    public void Excute() {
-        if (cmdQueue.Count < 1) {
+    public void Excute () {
+        if (cmdQueue.Count == 0) {
             return;
         }
+
         actionCmd = cmdQueue.Peek();
         if (actionCmd.completeFlag) {
             actionCmd.End();
@@ -40,7 +41,7 @@ public class ActionCmdProcessor {
     }
 
 
-    public void Stop() {
+    public void Stop () {
 
     }
 

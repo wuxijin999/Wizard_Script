@@ -19,10 +19,10 @@ namespace Fight {
                 return;
             }
 
-            attributeDict[_type].Value = _value;
+            attributeDict[_type].value = _value;
 
             if (AttributeChangeEvent != null) {
-                AttributeChangeEvent(_type, attributeDict[_type].Value);
+                AttributeChangeEvent(_type, attributeDict[_type].value);
             }
         }
 
@@ -31,10 +31,10 @@ namespace Fight {
                 WDebug.Log(string.Format("FightAttribute {0} is not exist!", _type));
                 return;
             }
-            attributeDict[_type].Value += _value;
+            attributeDict[_type].value += _value;
 
             if (AttributeChangeEvent != null) {
-                AttributeChangeEvent(_type, attributeDict[_type].Value);
+                AttributeChangeEvent(_type, attributeDict[_type].value);
             }
 
         }
@@ -45,7 +45,7 @@ namespace Fight {
                 return 0;
             }
 
-            return attributeDict[_type].Value;
+            return attributeDict[_type].value;
         }
 
         public void Reduce(FightAttribute _type, int _value) {
@@ -54,10 +54,10 @@ namespace Fight {
                 return;
             }
 
-            attributeDict[_type].Value -= _value;
+            attributeDict[_type].value -= _value;
 
             if (AttributeChangeEvent != null) {
-                AttributeChangeEvent(_type, attributeDict[_type].Value);
+                AttributeChangeEvent(_type, attributeDict[_type].value);
             }
 
         }
