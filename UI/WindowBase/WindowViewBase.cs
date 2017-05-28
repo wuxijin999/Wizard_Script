@@ -209,7 +209,7 @@ namespace UI {
         private void LoadResource () {
             string temp = this.GetType().Name;
             string prefabName = StringUtil.StringBuild("Win_", temp.Substring(0, temp.Length - 3));
-            panel = GameObject.Instantiate(AssetLoadTools.Load_UI(prefabName)) as GameObject;
+            panel = GameObject.Instantiate(AssetLoad.LoadUI(prefabName)) as GameObject;
             panel.name = temp;
         }
     }

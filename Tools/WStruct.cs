@@ -12,35 +12,35 @@ public class ClampInt {
             return mValue;
         }
         set {
-            mValue = Mathf.Clamp(value, min, max);
+            mValue = Mathf.Clamp(value,min,max);
         }
     }
 
-    public ClampInt(int _value, int _min = int.MinValue, int _max = int.MaxValue) {
-        mValue = _value;
+    public ClampInt(int _value,int _min = int.MinValue,int _max = int.MaxValue) {
         min = _min;
         max = _max;
+        value = _value;
     }
 }
 
 
-    public class ClampFloat {
-        float min;
-        float max;
+public class ClampFloat {
+    float min;
+    float max;
 
-        private float mValue;
-        public float value {
-            get {
-                return mValue;
-            }
-            set {
-                mValue = Mathf.Clamp(value, min, max);
-            }
+    private float mValue;
+    public float value {
+        get {
+            return mValue;
         }
-
-        public ClampFloat(float _value, float _min = float.MinValue, float _max = float.MaxValue) {
-            mValue = _value;
-            min = _min;
-            max = _max;
+        set {
+            mValue = Mathf.Clamp(value,min,max);
         }
     }
+
+    public ClampFloat(float _value,float _min = float.MinValue,float _max = float.MaxValue) {
+        min = _min;
+        max = _max;
+        value = _value;
+    }
+}

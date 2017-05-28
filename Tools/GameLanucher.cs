@@ -2,7 +2,7 @@
 using System.Collections;
 using UI;
 
-public class GameLanucher : MonoBehaviour {
+public class GameLanucher:MonoBehaviour {
 
     private void Start() {
 
@@ -12,8 +12,7 @@ public class GameLanucher : MonoBehaviour {
 
         //创建游戏基础物件
         UITools.CreatUIRoot();
-        ScenesManager.Instance.LoadLevel("InfiniteScrollRect", SceneType.Main, null, null);
-
+        ScenesManager.Instance.LoadLevel("InfiniteScrollRect",SceneType.Main);
     }
 
 

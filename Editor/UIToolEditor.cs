@@ -9,7 +9,7 @@ public class UIToolEditor : Editor {
 
     [MenuItem("UI/CreatUIRoot")]
     public static void CreateUIRoot() {
-        GameObject go = Instantiate(AssetLoadTools.Load_UI("UIRoot"));
+        GameObject go = Instantiate(AssetLoad.LoadUI("UIRoot"));
         go.name = "UIRoot";
     }
 

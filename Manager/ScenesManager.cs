@@ -7,115 +7,119 @@ using UnityEngine.SceneManagement;
 using System;
 using System.Collections;
 
-public class ScenesManager : SingletonMonobehavior<ScenesManager> {
 
-    public delegate void ProgressHandler (float _percent);
-    public event ProgressHandler ProgressEvent;
+public class SceneAsyncOption {
+    public float progress {
+        get; set;
+    }
+
+    public bool done {
+        get; set;
+    }
+
+    DateTime beginTime;
+    public float time {
+        get {
+            return (float)(DateTime.Now - beginTime).TotalMilliseconds / 1000f;
+        }
+    }
+
+    public SceneAsyncOption() {
+        progress = 0f;
+        done = false;
+        beginTime = DateTime.Now;
+    }
+
+}
+
+
+public class ScenesManager:SingletonMonobehavior<ScenesManager> {
 
     #region Fields
 
-    static DateTime startTime;
-    static DateTime endTime;
-
-    private string currentSceneName;
-    public string CurrentSceneName {
+    private string m_CurrentSceneName;
+    public string currentSceneName {
         get {
-            return currentSceneName;
+            return m_CurrentSceneName;
+        }
+        private set {
+            m_CurrentSceneName = value;
         }
     }
 
-    private SceneType lastType;
-    public SceneType LastType {
+    private SceneType m_LastType;
+    public SceneType lastType {
         get {
-            return lastType;
+            return m_LastType;
+        }
+        private set {
+            m_LastType = value;
         }
     }
 
-    private SceneType currentType;
-    public SceneType CurrentType {
+    private SceneType m_CurrentType;
+    public SceneType currentType {
         get {
-            return currentType;
+            return m_CurrentType;
+        }
+        private set {
+            m_CurrentType = value;
         }
     }
 
     #endregion
 
 
-    public void LoadLevel (string _sceneName, SceneType _type, Action _beginCallBack, Action _endCallBack) {
+    public SceneAsyncOption LoadLevel(string _sceneName,SceneType _type) {
 
-        startTime = DateTime.Now;
+        var async = new SceneAsyncOption();
 
         currentSceneName = _sceneName;
         lastType = currentType;
         currentType = _type;
 
-        if (_beginCallBack != null) {
-            _beginCallBack();
-        }
-
-        SceneManager.LoadSceneAsync("Empty", LoadSceneMode.Single);
+        SceneManager.LoadSceneAsync("Empty",LoadSceneMode.Single);
+        async.progress = 0.1f;
         System.GC.Collect();
+        async.progress = 0.2f;
         Resources.UnloadUnusedAssets();
+        async.progress = 0.3f;
+        StartCoroutine(Co_LoadScene(LoadSceneMode.Single,async));
 
-        StartCoroutine(Co_LoadScene(LoadSceneMode.Single, _endCallBack));
+        return async;
     }
 
-    public void LoadLevelAdditive (string _sceneName, SceneType _type, Action _beginCallBack, Action _endCallBack) {
+    public SceneAsyncOption LoadLevelAdditive(string _sceneName,SceneType _type) {
 
-        startTime = DateTime.Now;
-
+        var async = new SceneAsyncOption();
         currentSceneName = _sceneName;
         lastType = currentType;
         currentType = _type;
 
-        if (_beginCallBack != null) {
-            _beginCallBack();
-        }
-
-        StartCoroutine(Co_LoadScene(LoadSceneMode.Additive, _endCallBack));
+        StartCoroutine(Co_LoadScene(LoadSceneMode.Additive,async));
+        return async;
     }
 
-    IEnumerator Co_LoadScene (LoadSceneMode _mode, Action _endCallBack) {
+    IEnumerator Co_LoadScene(LoadSceneMode _mode,SceneAsyncOption _async) {
 
-        Application.targetFrameRate = 1000;
-
-        if (_mode == LoadSceneMode.Single) {
-            BroadcastProgress(10);
-        }
-
-        AsyncOperation asyncOperation = SceneManager.LoadSceneAsync(currentSceneName, _mode);
-        while (asyncOperation != null && !asyncOperation.isDone) {
-            if (_mode == LoadSceneMode.Single) {
-                BroadcastProgress((int)(10 + 79 * asyncOperation.progress));
-            }
+        var startProgress = _async.progress;
+        var asyncOperation = SceneManager.LoadSceneAsync(currentSceneName,_mode);
+        while(asyncOperation != null && !asyncOperation.isDone) {
+            _async.progress = startProgress + asyncOperation.progress * 0.5f;
             yield return null;
         }
 
-        if (_mode == LoadSceneMode.Single) {
-            BroadcastProgress(100);
-        }
-
-        if (_mode == LoadSceneMode.Single) {
+        if(_mode == LoadSceneMode.Single) {
             System.GC.Collect();
             Resources.UnloadUnusedAssets();
         }
 
-        if (_endCallBack != null) {
-            _endCallBack();
-        }
-
-        endTime = DateTime.Now;
-        WDebug.Log(string.Format("Load {0} use<color=yellow> {1} </color>second", currentSceneName, (endTime - startTime).TotalSeconds));
+        _async.progress = 1f;
+        _async.done = true;
+        WDebug.Log(string.Format("Load {0} use<color=yellow> {1} </color>second",currentSceneName,_async.time));
     }
 
-    private void BroadcastProgress (int _progress) {
 
-        WDebug.Log(string.Format("场景加载进度 ：{0}", _progress));
-
-        if (ProgressEvent != null) {
-            ProgressEvent(_progress * 0.01f);
-        }
-    }
 }
 
 

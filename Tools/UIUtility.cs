@@ -5,7 +5,7 @@ public class UITools {
 
     static public void CreatUIRoot () {
 
-        GameObject root = GameObject.Instantiate(AssetLoadTools.Load_UI("UIRoot")) as GameObject;
+        GameObject root = GameObject.Instantiate(AssetLoad.LoadUI("UIRoot")) as GameObject;
         GameObject.DontDestroyOnLoad(root);
         root.name = "UIRoot";
     }
